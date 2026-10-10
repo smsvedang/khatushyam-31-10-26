@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>खाटू श्याम जी दर्शन यात्रा 2026 | ShiVe Tours and Travels</title>
+  
+  <!-- SEO & Social Meta Tags -->
+  <meta name="description" content="ShiVe Tours and Travels प्रस्तुत करता है खाटू श्याम जी भव्य दर्शन यात्रा। दिनांक 31-10-2026 | शुल्क ₹900 (भोजन एवं डीजे शामिल) | पिकअप: एमिटी जयपुर एवं आमेर रोड।">
+  <meta name="theme-color" content="#FF7700">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Rozha+One&family=Tiro+Devanagari+Hindi:ital@0;1&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome 6 Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Canvas Confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Floating Ambient Particles Canvas -->
+  <canvas id="particles-canvas"></canvas>
+
+  <!-- 1. Top Devotional Ticker Banner -->
+  <aside class="top-ticker" aria-label="Devotional Banner">
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <span class="badge-om">🕉️ ॐ</span>
+      <span class="devanagari-font">|| हारे का सहारा, बाबा श्याम हमारा || जय श्री श्याम ||</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <button type="button" id="toggleAudioBtn" class="audio-toggle-btn" title="भजन व बांसुरी धुन बजाएं">
+        <i class="fas fa-music"></i>
+        <span id="audioBtnText">भजन / धुन बजाएं</span>
+        <div id="eqBar" class="equalizer-bar" style="display: none;">
+          <span></span><span></span><span></span>
+        </div>
+      </button>
+      <span style="font-size: 0.8rem; opacity: 0.9;">
+        <i class="fas fa-calendar-alt"></i> 31 अक्टूबर 2026
+      </span>
+    </div>
+  </aside>
+
+  <!-- 2. Main Navigation Bar -->
+  <header class="main-navbar">
+    <div class="nav-container">
+      <a href="#" class="brand-wrapper" style="text-decoration: none;">
+        <div class="brand-icon">
+          <i class="fas fa-om"></i>
+        </div>
+        <div>
+          <div class="brand-name">ShiVe <span>Tours & Travels</span></div>
+          <div class="brand-tagline">भरोसेमंद सफर • यादगार अनुभव</div>
+        </div>
+      </a>
+      <div class="nav-cta">
+        <a href="tel:+919876543210" class="nav-phone-link d-none-mobile">
+          <i class="fas fa-phone-alt"></i> <span>+91 98765 43210</span>
+        </a>
+        <a href="#bookingSection" class="btn-book-nav">
+          <i class="fas fa-ticket-alt"></i> <span>सीट बुक करें</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- 3. Hero Section -->
+    <section class="hero-section">
+      <div class="hero-container">
+        <!-- Hero Left Info -->
+        <div class="hero-info-col">
+          <div class="hero-badge-pill">
+            <i class="fas fa-dharmachakra"></i>
+            <span>पावन दर्शन यात्रा • 31 अक्टूबर 2026</span>
+          </div>
+
+          <h1 class="hero-title devanagari-font">
+            श्री खाटू श्याम जी <br>
+            <span class="gradient-text">भव्य दर्शन यात्रा 2026</span>
+          </h1>
+
+          <p class="hero-subtitle">
+            चलो बुलावा आया है, बाबा श्याम ने बुलाया है! एमिटी जयपुर एवं आमेर रोड से खाटू धाम की संपूर्ण आनंदमयी यात्रा।
+          </p>
+
+          <!-- Highlights Chips -->
+          <div class="highlight-chips">
+            <div class="chip">
+              <i class="fas fa-calendar-check"></i>
+              <span>31-10-2026 (शनिवार)</span>
+            </div>
+            <div class="chip">
+              <i class="fas fa-clock"></i>
+              <span>सुबह 9:00 AM प्रस्थान</span>
+            </div>
+            <div class="chip">
+              <i class="fas fa-map-marker-alt"></i>
+              <span>एमिटी जयपुर & आमेर रोड</span>
+            </div>
+            <div class="chip">
+              <i class="fas fa-music"></i>
+              <span>गाड़ी में डीजे (DJ on Wheels)</span>
+            </div>
+            <div class="chip">
+              <i class="fas fa-utensils"></i>
+              <span>स्वादिष्ट भोजन शामिल</span>
+            </div>
+          </div>
+
+          <!-- Hero Pricing Card -->
+          <div class="hero-fare-card">
+            <div>
+              <div class="fare-amount">
+                <span class="currency">₹</span>
+                <span class="number">900</span>
+                <span class="per-person">/ प्रति व्यक्ति</span>
+              </div>
+              <div style="font-size: 0.78rem; color: #78350F; margin-top: 2px;">
+                *आने-जाने की यात्रा, भोजन एवं डीजे सहित
+              </div>
+            </div>
+            <div class="fare-perks">
+              <span class="badge-included"><i class="fas fa-check"></i> Food Included</span>
+              <div>वाहन में डीजे साउंड 🎵</div>
+            </div>
+          </div>
+
+          <!-- CTA Buttons -->
+          <div class="hero-cta-group">
+            <a href="#bookingSection" class="btn-primary-gradient">
+              <i class="fas fa-hand-holding-heart"></i>
+              <span>सीट आरक्षित करें</span>
+            </a>
+            <a href="#itinerarySection" class="btn-secondary-outline">
+              <i class="fas fa-list-ul"></i>
+              <span>यात्रा विवरण देखें</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Hero Right Image Frame -->
+        <div class="hero-image-frame">
+          <div class="divine-aura-glow"></div>
+          <div class="hero-img-card">
+            <img src="assets/images/shyam_baba.jpg" alt="खाटू श्याम जी दर्शन" loading="eager">
+            <div class="hero-floating-badge">
+              <div class="badge-text">
+                <h4 class="devanagari-font">|| शीश के दानी की जय ||</h4>
+                <p>लखदातारी मोरी विपदा टारो • खाटू नरेश</p>
+              </div>
+              <i class="fas fa-sun" style="font-size: 1.6rem; color: #F59E0B;"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Countdown Timer Banner -->
+    <section class="countdown-section">
+      <div class="countdown-container">
+        <div class="countdown-info">
+          <h3>
+            <i class="fas fa-hourglass-half"></i>
+            <span>यात्रा प्रारंभ होने में शेष समय</span>
+          </h3>
+          <p>सीटें सीमित हैं! समय समाप्त होने से पहले अपना स्थान बुक करें।</p>
+        </div>
+        <div class="countdown-timer-grid">
+          <div class="timer-box">
+            <div id="timerDays" class="timer-number">--</div>
+            <div class="timer-label">दिन (Days)</div>
+          </div>
+          <div class="timer-box">
+            <div id="timerHours" class="timer-number">--</div>
+            <div class="timer-label">घंटे (Hours)</div>
+          </div>
+          <div class="timer-box">
+            <div id="timerMinutes" class="timer-number">--</div>
+            <div class="timer-label">मिनट (Mins)</div>
+          </div>
+          <div class="timer-box">
+            <div id="timerSeconds" class="timer-number">--</div>
+            <div class="timer-label">सेकंड (Secs)</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Features & Key Facilities Section -->
+    <section class="features-section">
+      <div class="section-title-wrap">
+        <span class="section-tag">सुविधाएं एवं विशेषताएं</span>
+        <h2 class="section-heading devanagari-font">इस यात्रा में आपको क्या-क्या मिलेगा?</h2>
+        <p class="section-subtext">ShiVe Tours and Travels आपके लिए लाया है आरामदायक, सुरक्षित और भक्तिमय यात्रा का संपूर्ण पैकेज।</p>
+      </div>
+
+      <div class="features-grid">
+        <!-- Feature 1: Food -->
+        <div class="feature-card">
+          <div class="feature-icon icon-food">
+            <i class="fas fa-bowl-rice"></i>
+          </div>
+          <h3 class="devanagari-font">स्वादिष्ट भोजन शामिल</h3>
+          <p>
+            यात्रा के दौरान सुबह का नाश्ता एवं दोपहर में शुद्ध, सात्विक एवं भरपेट भोजन/प्रसादी की व्यवस्था हमारे द्वारा की जाएगी।
+          </p>
+        </div>
+
+        <!-- Feature 2: DJ -->
+        <div class="feature-card">
+          <div class="feature-icon icon-dj">
+            <i class="fas fa-compact-disc"></i>
+          </div>
+          <h3 class="devanagari-font">वाहन में डीजे (DJ on Wheels)</h3>
+          <p>
+            गाड़ी में हाई-क्वालिटी साउंड सिस्टम एवं डीजे की व्यवस्था रहेगी। रास्ते भर बाबा श्याम के भजनों और भक्तिमय गानों पर झूमते हुए सफर तय होगा।
+          </p>
+        </div>
+
+        <!-- Feature 3: Bus -->
+        <div class="feature-card">
+          <div class="feature-icon icon-bus">
+            <i class="fas fa-bus-alt"></i>
+          </div>
+          <h3 class="devanagari-font">आरामदायक लग्जरी वाहन</h3>
+          <p>
+            पुश-बैक आरामदायक सीटें, अनुभवी एवं अनुशासित ड्राइवर के साथ सुरक्षित और सुखद यात्रा का भरोसा।
+          </p>
+        </div>
+
+        <!-- Feature 4: Pick & Drop -->
+        <div class="feature-card">
+          <div class="feature-icon icon-point">
+            <i class="fas fa-route"></i>
+          </div>
+          <h3 class="devanagari-font">पिकअप & ड्रॉप सुविधा</h3>
+          <p>
+            एमिटी यूनिवर्सिटी जयपुर गेट (प्रातः 09:00 बजे) और आमेर रोड से सुविधाजनक पिकअप। शाम को वापस इन्हीं स्थानों पर सुरक्षित ड्रॉप।
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Temple Visual & Sacred Darshan Banner -->
+    <section style="max-width: 1200px; margin: 0 auto 60px; padding: 0 20px;">
+      <div style="background: white; border-radius: 24px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.06); border: 2px solid #FFE082; display: grid; grid-template-columns: 1fr 1fr; align-items: center;">
+        <div style="padding: 40px;">
+          <span class="section-tag">पवित्र खाटू धाम</span>
+          <h3 class="devanagari-font" style="font-size: 2rem; color: #1E1B4B; margin: 10px 0 16px;">
+            तोरण द्वार एवं पावन मंदिर दर्शन
+          </h3>
+          <p style="color: #475569; font-size: 0.95rem; margin-bottom: 20px;">
+            संसार भर से भक्त बाबा श्याम के दरबार में अपनी अर्जी लगाने आते हैं। कहा जाता है कि जो भी सच्चे मन से खाटू धाम आता है, बाबा उसकी हर मनोकामना पूर्ण करते हैं।
+          </p>
+          <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px; color: #334155; font-size: 0.9rem;">
+            <li><i class="fas fa-om" style="color: #FF7700; margin-right: 8px;"></i> ऐतिहासिक तोरण द्वार से भव्य प्रवेश</li>
+            <li><i class="fas fa-om" style="color: #FF7700; margin-right: 8px;"></i> बाबा श्याम के मुख्य विग्रह के दर्शन</li>
+            <li><i class="fas fa-om" style="color: #FF7700; margin-right: 8px;"></i> पावन श्याम कुण्ड एवं श्याम बगीची दर्शन</li>
+          </ul>
+        </div>
+        <div style="height: 100%; min-height: 320px;">
+          <img src="assets/images/khatu_dwar.jpg" alt="खाटू श्याम जी मंदिर तोरण द्वार" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. Detailed Itinerary Timeline -->
+    <section id="itinerarySection" class="itinerary-section">
+      <div class="itinerary-container">
+        <div class="section-title-wrap">
+          <span class="section-tag">यात्रा कार्यक्रम</span>
+          <h2 class="section-heading devanagari-font">एक दिवसीय यात्रा का पूरा शेड्यूल</h2>
+          <p class="section-subtext">31 अक्टूबर 2026 के दिन का समयबद्ध यात्रा विवरण (Time Schedule)</p>
+        </div>
+
+        <div class="timeline">
+          <!-- Item 1 -->
+          <div class="timeline-item">
+            <div class="timeline-dot"><i class="fas fa-clock" style="font-size: 0.65rem; color: #FF7700;"></i></div>
+            <div class="timeline-content">
+              <span class="timeline-time"><i class="fas fa-bell"></i> 08:45 AM - 09:00 AM</span>
+              <h4 class="timeline-title">पहला पिकअप: एमिटी यूनिवर्सिटी जयपुर (Amity Jaipur)</h4>
+              <p class="timeline-desc">सभी यात्रियों का एमिटी जयपुर मेन गेट पर एकत्रीकरण, हाजिरी एवं ठीक 09:00 AM पर प्रस्थान।</p>
+            </div>
+          </div>
+
+          <!-- Item 2 -->
+          <div class="timeline-item">
+            <div class="timeline-dot"><i class="fas fa-bus" style="font-size: 0.65rem; color: #FF7700;"></i></div>
+            <div class="timeline-content">
+              <span class="timeline-time"><i class="fas fa-location-arrow"></i> 09:45 AM</span>
+              <h4 class="timeline-title">दूसरा पिकअप: आमेर रोड (Amer Road, Jaipur)</h4>
+              <p class="timeline-desc">आमेर रोड से यात्रियों का पिकअप एवं गाड़ी में ऑन-बोर्ड डीजे व श्याम भजनों का शुभारंभ।</p>
+            </div>
+          </div>
+
+          <!-- Item 3 -->
+          <div class="timeline-item">
+            <div class="timeline-dot"><i class="fas fa-coffee" style="font-size: 0.65rem; color: #FF7700;"></i></div>
+            <div class="timeline-content">
+              <span class="timeline-time"><i class="fas fa-utensils"></i> 10:30 AM</span>
+              <h4 class="timeline-title">मार्ग में स्वादिष्ट जलपान (Breakfast on the way)</h4>
+              <p class="timeline-desc">हाईवे पर ताज़ा नाश्ता एवं चाय की व्यवस्था (भोजन पैकेज में शामिल)।</p>
+            </div>
+          </div>
+
+          <!-- Item 4 -->
+          <div class="timeline-item">
+            <div class="timeline-dot"><i class="fas fa-gopuram" style="font-size: 0.65rem; color: #FF7700;"></i></div>
+            <div class="timeline-content">
+              <span class="timeline-time"><i class="fas fa-flag"></i> 12:30 PM - 02:30 PM</span>
+              <h4 class="timeline-title">खाटू धाम आगमन एवं पावन दर्शन (Darshan)</h4>
+              <p class="timeline-desc">तोरण द्वार से प्रवेश, श्याम बाबा के अलौकिक दर्शन, श्याम कुंड दर्शन एवं भोग अर्पण।</p>
+            </div>
+          </div>
+
+          <!-- Item 5 -->
+          <div class="timeline-item">
+            <div class="timeline-dot"><i class="fas fa-concierge-bell" style="font-size: 0.65rem; color: #FF7700;"></i></div>
+            <div class="timeline-content">
+              <span class="timeline-time"><i class="fas fa-check-circle"></i> 02:30 PM - 03:30 PM</span>
+              <h4 class="timeline-title">दोपहर का स्वादिष्ट भोजन (Lunch Included)</h4>
+              <p class="timeline-desc">शुद्ध, सात्विक एवं स्वादिष्ट प्रसादी/भोजन की व्यवस्था।</p>
+            </div>
+          </div>
+
+          <!-- Item 6 -->
+          <div class="timeline-item">
+            <div class="timeline-dot"><i class="fas fa-shopping-bag" style="font-size: 0.65rem; color: #FF7700;"></i></div>
+            <div class="timeline-content">
+              <span class="timeline-time"><i class="fas fa-store"></i> 03:30 PM - 05:00 PM</span>
+              <h4 class="timeline-title">श्याम बगीची & स्थानीय बाजार भ्रमण (Market & Leisure)</h4>
+              <p class="timeline-desc">बाबा के प्रसाद (पेड़े), धार्मिक सामग्री एवं स्मृति चिन्हों की खरीदारी हेतु समय।</p>
+            </div>
+          </div>
+
+          <!-- Item 7 -->
+          <div class="timeline-item">
+            <div class="timeline-dot"><i class="fas fa-music" style="font-size: 0.65rem; color: #FF7700;"></i></div>
+            <div class="timeline-content">
+              <span class="timeline-time"><i class="fas fa-undo"></i> 05:30 PM</span>
+              <h4 class="timeline-title">जयपुर के लिए वापसी प्रस्थान (DJ Dhamaal Return)</h4>
+              <p class="timeline-desc">वाहन में डीजे एवं भजनों के साथ जयपुर के लिए प्रस्थान।</p>
+            </div>
+          </div>
+
+          <!-- Item 8 -->
+          <div class="timeline-item">
+            <div class="timeline-dot"><i class="fas fa-home" style="font-size: 0.65rem; color: #FF7700;"></i></div>
+            <div class="timeline-content">
+              <span class="timeline-time"><i class="fas fa-map-pin"></i> 08:30 PM - 09:30 PM</span>
+              <h4 class="timeline-title">सुरक्षित ड्रॉप: आमेर रोड एवं एमिटी जयपुर</h4>
+              <p class="timeline-desc">पहले आमेर रोड ड्रॉप तत्पश्चात एमिटी यूनिवर्सिटी जयपुर पर सभी यात्रियों की सुरक्षित वापसी।</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. Inclusions vs Exclusions Section (स्पष्ट नियम) -->
+    <section class="terms-comparison-section">
+      <div class="section-title-wrap">
+        <span class="section-tag">पारदर्शिता एवं नियम</span>
+        <h2 class="section-heading devanagari-font">शुल्क में क्या शामिल है और क्या नहीं?</h2>
+        <p class="section-subtext">यात्रा से पूर्व सभी नियमों की स्पष्ट जानकारी नीचे दी गई है:</p>
+      </div>
+
+      <div class="comparison-grid">
+        <!-- Included -->
+        <div class="box-included">
+          <div class="box-header">
+            <i class="fas fa-check-circle" style="font-size: 1.5rem; color: #16A34A;"></i>
+            <h3>₹900 शुल्क में शामिल है (Inclusions)</h3>
+          </div>
+          <ul class="box-list">
+            <li><i class="fas fa-check"></i> दोनों तरफ का आरामदायक बस/वाहन सफर (Amity/Amer to Khatu & Back)</li>
+            <li><i class="fas fa-check"></i> वाहन में डीजे साउंड सिस्टम (DJ on Wheels)</li>
+            <li><i class="fas fa-check"></i> सुबह का ताज़ा नाश्ता एवं चाय</li>
+            <li><i class="fas fa-check"></i> दोपहर का शुद्ध सात्विक भरपेट भोजन/प्रसादी</li>
+            <li><i class="fas fa-check"></i> सभी प्रकार के टोल टैक्स, पार्किंग एवं ड्राइवर शुल्क</li>
+          </ul>
+        </div>
+
+        <!-- Excluded -->
+        <div class="box-excluded">
+          <div class="box-header">
+            <i class="fas fa-times-circle" style="font-size: 1.5rem; color: #DC2626;"></i>
+            <h3>शामिल नहीं है (Exclusions - 'बाकी खर्चा हमारा नहीं होगा')</h3>
+          </div>
+          <ul class="box-list">
+            <li><i class="fas fa-times"></i> मंदिर में वीआईपी दर्शन या विशेष लाइन टिकट (सामान्य दर्शन लाइन में होंगे)</li>
+            <li><i class="fas fa-times"></i> बाबा श्याम के लिए व्यक्तिगत प्रसाद, माला, पेड़े या नारियल का खर्च</li>
+            <li><i class="fas fa-times"></i> बाजार में अपनी व्यक्तिगत खरीदारी या निजी स्नैक्स/कोल्ड ड्रिंक्स</li>
+            <li><i class="fas fa-times"></i> कोई भी व्यक्तिगत चिकित्सा खर्च अथवा आपातकालीन निजी व्यय</li>
+            <li><i class="fas fa-times"></i> <strong>स्पष्ट नोट:</strong> पैकेज में उल्लिखित भोजन व यात्रा के अलावा कोई भी अतिरिक्त खर्च यात्री का स्वयं होगा।</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. Interactive Booking Form Section -->
+    <section id="bookingSection" class="booking-section">
+      <div class="form-wrapper-card">
+        <!-- Form Header Banner -->
+        <div class="form-header-banner">
+          <div style="font-size: 1.8rem; margin-bottom: 6px;">🙏</div>
+          <h2 class="devanagari-font">खाटू श्याम जी दर्शन यात्रा 2026</h2>
+          <p>सीट बुकिंग फॉर्म • ShiVe Tours and Travels</p>
+        </div>
+
+        <!-- Form Body -->
+        <div class="form-body">
+          <form id="khatuBookingForm" novalidate>
+
+            <div class="form-grid">
+              <!-- Full Name -->
+              <div class="form-group form-col-full">
+                <label class="form-label" for="fullName">
+                  <i class="fas fa-user"></i> <span>यात्री का पूरा नाम (Full Name)</span> <span class="req">*</span>
+                </label>
+                <input type="text" id="fullName" class="form-input" placeholder="उदा. राहुल शर्मा" required>
+              </div>
+
+              <!-- Phone Number -->
+              <div class="form-group">
+                <label class="form-label" for="phoneNumber">
+                  <i class="fab fa-whatsapp"></i> <span>व्हाट्सएप / मोबाइल नंबर (10 अंक)</span> <span class="req">*</span>
+                </label>
+                <input type="tel" id="phoneNumber" class="form-input" placeholder="उदा. 9876543210" pattern="[6-9][0-9]{9}" maxlength="10" required>
+              </div>
+
+              <!-- Alternate Phone Number -->
+              <div class="form-group">
+                <label class="form-label" for="altPhoneNumber">
+                  <i class="fas fa-phone"></i> <span>आपातकालीन / दूसरा नंबर (Alternate No.)</span>
+                </label>
+                <input type="tel" id="altPhoneNumber" class="form-input" placeholder="उदा. 9829012345" maxlength="10">
+              </div>
+
+              <!-- Email ID -->
+              <div class="form-group form-col-full">
+                <label class="form-label" for="emailAddress">
+                  <i class="fas fa-envelope"></i> <span>ईमेल आईडी (Email ID)</span> <span class="req">*</span>
+                </label>
+                <input type="email" id="emailAddress" class="form-input" placeholder="उदा. rahul@example.com" required>
+              </div>
+
+              <!-- Pickup Point Selection -->
+              <div class="form-group form-col-full">
+                <label class="form-label">
+                  <i class="fas fa-map-marker-alt"></i> <span>पिकअप पॉइंट चुनें (Pickup Location)</span> <span class="req">*</span>
+                </label>
+                <div class="pickup-radio-group">
+                  <label class="pickup-card-option">
+                    <input type="radio" name="pickupLocation" value="Amity University Jaipur" checked>
+                    <div class="pickup-box">
+                      <strong><i class="fas fa-university"></i> एमिटी जयपुर (Amity Jaipur)</strong>
+                      <span>पिकअप समय: प्रातः 09:00 AM (मेन गेट)</span>
+                    </div>
+                  </label>
+
+                  <label class="pickup-card-option">
+                    <input type="radio" name="pickupLocation" value="Amer Road, Jaipur">
+                    <div class="pickup-box">
+                      <strong><i class="fas fa-road"></i> आमेर रोड (Amer Road, Jaipur)</strong>
+                      <span>पिकअप समय: प्रातः 09:45 AM (मुख्य मार्ग)</span>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Seat Count -->
+              <div class="form-group">
+                <label class="form-label" for="seatCount">
+                  <i class="fas fa-chair"></i> <span>सीटों की संख्या (Seats)</span> <span class="req">*</span>
+                </label>
+                <input type="number" id="seatCount" class="form-input" value="1" min="1" max="20" required>
+              </div>
+
+              <!-- Transaction ID (Optional) -->
+              <div class="form-group">
+                <label class="form-label" for="transactionId">
+                  <i class="fas fa-receipt"></i> <span>पेमेंट UTR / Ref No. (यदि भुगतान किया हो)</span>
+                </label>
+                <input type="text" id="transactionId" class="form-input" placeholder="उदा. UPI / Cash on Bus">
+              </div>
+
+              <!-- Co-Travelers Names (Reveals if seats > 1) -->
+              <div class="form-group form-col-full" id="coTravelersGroup" style="display: none;">
+                <label class="form-label" for="coTravelers">
+                  <i class="fas fa-users"></i> <span>साथी यात्रियों के नाम (Co-Travelers Names)</span>
+                </label>
+                <textarea id="coTravelers" class="form-textarea" rows="2" placeholder="बाकी यात्रियों के नाम दर्ज करें"></textarea>
+              </div>
+
+              <!-- Special Request -->
+              <div class="form-group form-col-full">
+                <label class="form-label" for="specialNote">
+                  <i class="fas fa-comment-alt"></i> <span>कोई विशेष टिप्पणी या अनुरोध (Optional)</span>
+                </label>
+                <input type="text" id="specialNote" class="form-input" placeholder="जैसे: सीनियर सिटीजन सीट या कोई विशेष बात">
+              </div>
+            </div>
+
+            <!-- Live Summary Box -->
+            <div class="live-summary-box">
+              <div class="summary-info">
+                <h4>यात्रा शुल्क गणना (Fare Summary)</h4>
+                <p>₹900 × <span id="summarySeatCount">1</span> सीट (भोजन + डीजे वाहन शामिल)</p>
+              </div>
+              <div class="summary-total">
+                <div class="total-label">देय कुल राशि (Total Fare)</div>
+                <div class="total-val" id="liveTotalAmount">₹900</div>
+              </div>
+            </div>
+
+            <!-- UPI Payment Assistance Box -->
+            <div class="payment-info-box">
+              <div class="payment-info-header">
+                <h4><i class="fas fa-qrcode"></i> ऑनलाइन पेमेंट (UPI Advance / Full)</h4>
+                <span style="font-size: 0.75rem; background: #DCFCE7; color: #166534; padding: 2px 8px; border-radius: 4px; font-weight: 700;">GPay / PhonePe / Paytm</span>
+              </div>
+              <p style="font-size: 0.85rem; color: #475569; margin-bottom: 10px;">
+                आप अपनी सीट सुरक्षित करने हेतु नीचे दी गई UPI ID पर भुगतान कर सकते हैं या बस पर प्रस्थान के समय भुगतान कर सकते हैं:
+              </p>
+              <div class="upi-row">
+                <span class="upi-id-text" id="upiIdText">shivetours@upi</span>
+                <button type="button" class="btn-copy-upi" id="copyUpiBtn">
+                  <i class="far fa-copy"></i> Copy
+                </button>
+              </div>
+              <p style="font-size: 0.75rem; color: #64748B; margin: 0;">
+                *भुगतान के बाद स्क्रीनशॉट या यूटीआर (UTR) नंबर फॉर्म में भरें अथवा सीधे हमारे व्हाट्सएप पर भेजें।
+              </p>
+            </div>
+
+            <!-- MANDATORY TERMS & CONDITIONS AND LIABILITY DISCLAIMER CHECKBOX -->
+            <div class="terms-liability-card">
+              <label class="terms-checkbox-wrap" for="termsAgreeCheckbox">
+                <input type="checkbox" id="termsAgreeCheckbox" required>
+                <div class="terms-text">
+                  <strong>नियम, सुरक्षा दिशा-निर्देश एवं जोखिम अस्वीकरण (Liability Disclaimer):</strong><br>
+                  मैं पुष्टि करता/करती हूँ कि मैं अपनी स्वेच्छा एवं <strong>अपनी स्वयं की जिम्मेदारी (At My Own Risk)</strong> पर यात्रा कर रहा/रही हूँ। यात्रा के दौरान किसी भी प्रकार की आकस्मिक घटना, दुर्घटना, सामान गुम होने अथवा स्वास्थ्य समस्या की जिम्मेदारी मेरी स्वयं की होगी, इसमें 'ShiVe Tours and Travels' की कोई कानूनी या आर्थिक जिम्मेदारी नहीं होगी।
+                  <br>
+                  <a href="#" id="openTermsModalBtn" class="link-open-terms">
+                    <i class="fas fa-external-link-alt"></i> सभी यात्रा नियम व शर्तें विस्तार से पढ़ें (Read Full Terms)
+                  </a>
+                </div>
+              </label>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" id="submitBtn" class="btn-submit-booking">
+              <i class="fas fa-spinner fa-spin" id="btnSpinner" style="display: none;"></i>
+              <span id="btnText">🙏 सीट कन्फर्म करें (Confirm Booking)</span>
+            </button>
+
+            <div class="form-security-note">
+              <i class="fas fa-shield-alt"></i>
+              <span>आपकी जानकारी 100% सुरक्षित है एवं सीधे गूगल शीट्स में दर्ज की जाती है।</span>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 10. Terms & Conditions Modal -->
+  <div id="termsModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="termsModalTitle">
+    <div class="modal-content-card">
+      <div class="modal-header">
+        <h3 id="termsModalTitle" class="devanagari-font"><i class="fas fa-scroll" style="color: #FF7700;"></i> यात्रा नियम, शर्तें एवं जोखिम अस्वीकरण</h3>
+        <button type="button" id="closeTermsModalBtn" class="modal-close-btn" aria-label="Close Modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="terms-scroll-body">
+          <div class="terms-rule-item">
+            <h4>1. यात्रा स्वेच्छा एवं स्वयं की जिम्मेदारी पर (Travel At Own Risk)</h4>
+            <p>
+              यह यात्रा सभी यात्री अपनी पूर्ण सहमति, स्वेच्छा और अपने स्वयं के जोखिम पर कर रहे हैं। मार्ग में, वाहन में अथवा मंदिर परिसर में किसी भी प्रकार की अप्रत्याशित घटना, सड़क दुर्घटना, भगदड़, शारीरिक चोट, प्राकृतिक आपदा, अचानक बीमारी अथवा मृत्यु की स्थिति में 'ShiVe Tours and Travels', इसके संचालक या कर्मचारी किसी भी प्रकार से कानूनी, दीवानी अथवा वित्तीय रूप से उत्तरदायी नहीं होंगे।
+            </p>
+          </div>
+
+          <div class="terms-rule-item">
+            <h4>2. सामान एवं कीमती वस्तुओं की सुरक्षा (Luggage & Valuables)</h4>
+            <p>
+              यात्री अपने मोबाइल फोन, पर्स, आभूषण, नकदी एवं अन्य निजी सामान की सुरक्षा के लिए स्वयं जिम्मेदार होंगे। यात्रा के दौरान या बस में किसी भी प्रकार की चोरी अथवा सामान छूट जाने पर टूर आयोजक जिम्मेदार नहीं होंगे।
+            </p>
+          </div>
+
+          <div class="terms-rule-item">
+            <h4>3. समय की पाबंदी (Punctuality)</h4>
+            <p>
+              पिकअप का समय प्रातः ठीक 09:00 बजे एमिटी यूनिवर्सिटी जयपुर एवं 09:45 बजे आमेर रोड तय है। सभी यात्रियों को 15 मिनट पूर्व उपस्थित होना अनिवार्य है। समय पर न पहुंचने की दशा में बस प्रस्थान कर जाएगी और टिकट राशि वापस नहीं होगी।
+            </p>
+          </div>
+
+          <div class="terms-rule-item">
+            <h4>4. अनुशासन एवं सामाजिक मर्यादा (Code of Conduct)</h4>
+            <p>
+              वाहन अथवा यात्रा में किसी भी प्रकार का नशा, मद्यपान, सिगरेट अथवा अनैतिक व्यवहार पूर्णतः प्रतिबंधित है। साथी यात्रियों अथवा स्टाफ के साथ अभद्र व्यवहार करने पर यात्री को बीच रास्ते में यात्रा से निष्कासित किया जा सकता है।
+            </p>
+          </div>
+
+          <div class="terms-rule-item">
+            <h4>5. अतिरिक्त खर्च की सीमा ('बाकी खर्चा हमारा नहीं होगा')</h4>
+            <p>
+              ₹900 शुल्क में मात्र जयपुर से खाटूश्यामजी का आने-जाने का सफर, ऑन-बोर्ड डीजे एवं भोजन (नाश्ता व लंच) शामिल है। इसके अतिरिक्त मंदिर का वीआईपी टिकट, स्पेशल प्रसाद, खरीदारी, व्यक्तिगत दवाइयां या अन्य कोई भी निजी खर्च यात्री को स्वयं वहन करना होगा।
+            </p>
+          </div>
+
+          <div class="terms-rule-item">
+            <h4>6. निरस्तीकरण एवं रिफंड नीति (Cancellation Policy)</h4>
+            <p>
+              सीटें सीमित हैं। एक बार सीट बुक होने के पश्चात बुकिंग रद्द करने पर कोई शुल्क रिफंड नहीं किया जाएगा।
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="acceptTermsModalBtn" class="btn-primary-gradient" style="padding: 10px 22px; font-size: 0.95rem;">
+          <i class="fas fa-check"></i> मैं सहमत हूँ (I Agree)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 11. Booking Confirmation & Printable Receipt Modal -->
+  <div id="bookingReceiptModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="receiptModalTitle">
+    <div class="modal-content-card receipt-card">
+      <div class="receipt-header">
+        <div class="receipt-icon-circle">
+          <i class="fas fa-check"></i>
+        </div>
+        <h3 id="receiptModalTitle" class="devanagari-font" style="color: #166534; font-size: 1.4rem;">
+          || जय श्री श्याम! सीट बुकिंग सफल ||
+        </h3>
+        <p style="color: #475569; font-size: 0.85rem; margin-top: 4px;">
+          आपकी यात्रा सीट सफलतापूर्वक दर्ज कर ली गई है।
+        </p>
+      </div>
+
+      <div class="modal-body" style="padding: 20px 24px;">
+        <table class="receipt-details-table">
+          <tr>
+            <td>बुकिंग संदर्भ आईडी (Booking ID):</td>
+            <td id="receiptBookingId" style="color: #C2410C;">SHIVE-KSJ-0000</td>
+          </tr>
+          <tr>
+            <td>यात्री का नाम (Full Name):</td>
+            <td id="receiptName">--</td>
+          </tr>
+          <tr>
+            <td>मोबाइल नंबर (Phone):</td>
+            <td id="receiptPhone">--</td>
+          </tr>
+          <tr>
+            <td>ईमेल आईडी (Email):</td>
+            <td id="receiptEmail">--</td>
+          </tr>
+          <tr>
+            <td>पिकअप पॉइंट (Pickup):</td>
+            <td id="receiptPickup">--</td>
+          </tr>
+          <tr>
+            <td>सीट संख्या (Seats):</td>
+            <td id="receiptSeats">1 Seat</td>
+          </tr>
+          <tr>
+            <td>यात्रा दिनांक व समय:</td>
+            <td id="receiptDate">31-10-2026 (09:00 AM)</td>
+          </tr>
+          <tr>
+            <td>कुल देय राशि (Total Amount):</td>
+            <td id="receiptAmount" style="color: #15803D; font-size: 1.15rem;">₹900</td>
+          </tr>
+          <tr>
+            <td>नियम व जोखिम सहमति:</td>
+            <td style="color: #15803D;"><i class="fas fa-check-circle"></i> स्वीकृत (At Own Risk)</td>
+          </tr>
+        </table>
+
+        <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 10px; padding: 12px; font-size: 0.8rem; color: #64748B; margin-top: 10px;">
+          <i class="fas fa-info-circle" style="color: #FF7700;"></i> 
+          कृपया इस रसीद का स्क्रीनशॉट ले लें अथवा नीचे दिए गए बटन से सीधे हमारे व्हाट्सएप पर भेजकर सीट पुष्ट करवा लें।
+        </div>
+      </div>
+
+      <div class="modal-footer no-print" style="justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+        <button type="button" class="btn-secondary-outline" id="btnPrintReceipt">
+          <i class="fas fa-print"></i> प्रिंट / सेव रसीद
+        </button>
+        <div style="display: flex; gap: 8px;">
+          <a href="#" id="btnWhatsAppReceipt" target="_blank" class="btn-primary-gradient" style="background: #25D366; box-shadow: 0 4px 15px rgba(37,211,102,0.4);">
+            <i class="fab fa-whatsapp"></i> WhatsApp पर भेजें
+          </a>
+          <button type="button" onclick="closeReceiptModal()" class="btn-secondary-outline" style="border: none; background: #F1F5F9;">
+            बंद करें
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 12. Floating WhatsApp Inquiry Button -->
+  <a href="https://wa.me/919876543210?text=Hello%20ShiVe%20Tours,%20Khatushyamji%20Trip%20(31-10-2026)%20ke%20baare%20me%20jaankari%20chahiye." target="_blank" class="floating-whatsapp" title="सीधे व्हाट्सएप पर चैट करें" aria-label="WhatsApp Chat">
+    <i class="fab fa-whatsapp"></i>
+  </a>
+
+  <!-- 13. Site Footer -->
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <h3 class="devanagari-font">ShiVe <span>Tours & Travels</span></h3>
+        <p>
+          धार्मिक एवं पर्यटन यात्राओं के लिए आपका विश्वसनीय साथी। हम सुनिश्चित करते हैं कि आपकी हर यात्रा सुरक्षित, सुविधाजनक और आध्यात्मिक आनंद से परिपूर्ण हो।
+        </p>
+        <div style="margin-top: 14px; display: flex; gap: 12px; font-size: 1.2rem;">
+          <a href="#" style="color: #FF7700;"><i class="fab fa-whatsapp"></i></a>
+          <a href="#" style="color: #FF7700;"><i class="fab fa-facebook"></i></a>
+          <a href="#" style="color: #FF7700;"><i class="fab fa-instagram"></i></a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4>यात्रा संपर्क सूत्र</h4>
+        <ul class="footer-links">
+          <li><i class="fas fa-phone-alt"></i> +91 98765 43210</li>
+          <li><i class="fab fa-whatsapp"></i> +91 98765 43210</li>
+          <li><i class="fas fa-envelope"></i> info@shivetours.com</li>
+          <li><i class="fas fa-map-marker-alt"></i> जयपुर, राजस्थान</li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>महत्वपूर्ण लिंक</h4>
+        <ul class="footer-links">
+          <li><a href="#itinerarySection">यात्रा कार्यक्रम</a></li>
+          <li><a href="#bookingSection">सीट बुकिंग फॉर्म</a></li>
+          <li><a href="#" onclick="document.getElementById('termsModal').classList.add('active'); return false;">नियम एवं शर्तें</a></li>
+          <li><a href="code.gs" target="_blank">Google Script (code.gs)</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div>
+        © 2026 ShiVe Tours and Travels. सर्वाधिकार सुरक्षित।
+      </div>
+      <div>
+        Designed for Shri Khatu Shyam Ji Yatra (31-10-2026)
+      </div>
+    </div>
+  </footer>
+
+  <!-- Custom Script -->
+  <script src="js/script.js"></script>
+</body>
+</html>
