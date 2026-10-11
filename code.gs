@@ -18,6 +18,8 @@
  * 8. Copy the "Web app URL" (looks like https://script.google.com/macros/s/AKfycb.../exec)
  * 9. Paste this URL into your website's 'js/script.js' file in the variable:
  *    const GOOGLE_SCRIPT_URL = "YOUR_DEPLOYED_WEB_APP_URL_HERE";
+ * 10. Test by opening the deployed URL (doGet); do not run doPost from the editor,
+ *     because the editor does not supply the HTTP event object.
  * ==============================================================================
  */
 
@@ -28,6 +30,14 @@ const SHEET_NAME = "Bookings";
  * Handle HTTP POST Request from the Website Form
  */
 function doPost(e) {
+  if (!e) {
+    Logger.log("doPost requires an HTTP POST event. Test through the deployed web app URL, not the Apps Script editor.");
+    return ContentService.createTextOutput(JSON.stringify({
+      result: "error",
+      message: "doPost must be called through the deployed web app using an HTTP POST request. Open the web app URL to test connectivity."
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+
   // CORS Lock / Header standard
   var lock = LockService.getScriptLock();
   // Wait up to 30 seconds for concurrent requests
