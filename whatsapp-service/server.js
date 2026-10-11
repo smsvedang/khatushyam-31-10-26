@@ -23,9 +23,11 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '25mb' }));
+app.use(express.urlencoded({ extended: true, limit: '25mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
+
+const CONFIG_FILE = path.join(__dirname, '..', 'site-config.json');
 
 // State variables
 let sock = null;
@@ -475,6 +477,44 @@ app.post('/api/send-test', async (req, res) => {
     await sock.sendMessage(recipientJid, { text: testText });
     return res.json({ success: true, message: `Test message sent to ${recipientJid}` });
   } catch (err) {
+    return res.status(500).json({ success: false, error: err.toString() });
+  }
+});
+
+/**
+ * API: Get Site Configuration
+ */
+app.get('/api/get-config', (req, res) => {
+  try {
+    if (fs.existsSync(CONFIG_FILE)) {
+      const data = JSON.parse(fs.readFileSync(CONFIG_FILE, 'utf-8'));
+      return res.json({ success: true, config: data });
+    }
+  } catch (err) {
+    console.error('Error reading config file:', err);
+  }
+  return res.json({ success: false, message: 'No custom config file found' });
+});
+
+/**
+ * API: Save Site Configuration to disk
+ */
+app.post('/api/save-config', (req, res) => {
+  try {
+    const configData = req.body;
+    if (!configData || typeof configData !== 'object') {
+      return res.status(400).json({ success: false, message: 'Invalid configuration payload' });
+    }
+    let existing = {};
+    if (fs.existsSync(CONFIG_FILE)) {
+      try { existing = JSON.parse(fs.readFileSync(CONFIG_FILE, 'utf-8')); } catch(e) {}
+    }
+    const merged = { ...existing, ...configData };
+    fs.writeFileSync(CONFIG_FILE, JSON.stringify(merged, null, 2), 'utf-8');
+    console.log('✅ [Config Saved] Updated site-config.json successfully');
+    return res.json({ success: true, message: 'Site configuration updated successfully on disk' });
+  } catch (err) {
+    console.error('Error writing config file:', err);
     return res.status(500).json({ success: false, error: err.toString() });
   }
 });

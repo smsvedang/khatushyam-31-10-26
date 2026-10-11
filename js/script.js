@@ -13,13 +13,24 @@ const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwEwzrbFi8Uyg
 const WHATSAPP_SERVICE_URL = "http://localhost:5000/api/send-confirmation";
 const WHATSAPP_STATUS_URL = "http://localhost:5000/api/status";
 
-// Trip Constants
-const RATE_PER_SEAT = 900;
-const TRIP_DATE_STR = "2026-10-31T09:00:00+05:30";
-const AGENCY_PHONE = "919243714402"; // Organizers WhatsApp/Call number
-const AGENCY_NAME = "ShiVe Tours and Travels";
+// Dynamic Trip Config Getters
+function getRatePerSeat() {
+  return (typeof getSiteConfig === "function" ? getSiteConfig().tripFare : 900) || 900;
+}
+function getTripDateStr() {
+  return (typeof getSiteConfig === "function" ? getSiteConfig().tripDateStr : "2026-10-31T09:00:00+05:30") || "2026-10-31T09:00:00+05:30";
+}
+function getAgencyPhone() {
+  return (typeof getSiteConfig === "function" ? (getSiteConfig().whatsappRaw || getSiteConfig().whatsapp) : "919243714402") || "919243714402";
+}
+function getAgencyName() {
+  return (typeof getSiteConfig === "function" ? getSiteConfig().agencyName : "ShiVe Tours and Travels") || "ShiVe Tours and Travels";
+}
 
 document.addEventListener("DOMContentLoaded", () => {
+  if (typeof applySiteConfig === "function") {
+    applySiteConfig();
+  }
   initCountdown();
   initFormInteractions();
   initParticleEffects();
@@ -29,10 +40,10 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /* ==============================================================================
-   1. Live Countdown Timer (Target: 31 Oct 2026, 09:00 AM)
+   1. Live Countdown Timer (Target: Trip Date)
    ============================================================================== */
 function initCountdown() {
-  const targetDate = new Date(TRIP_DATE_STR).getTime();
+  const targetDate = new Date(getTripDateStr()).getTime();
 
   function updateTimer() {
     const now = new Date().getTime();
@@ -87,7 +98,7 @@ function initFormInteractions() {
       if (isNaN(count) || count < 1) count = 1;
       if (count > 20) count = 20;
 
-      const total = count * RATE_PER_SEAT;
+      const total = count * getRatePerSeat();
       if (totalAmountElem) totalAmountElem.textContent = "₹" + total.toLocaleString("en-IN");
       if (summarySeatsElem) summarySeatsElem.textContent = count;
 
@@ -147,7 +158,7 @@ function initFormInteractions() {
       const coTravelers = document.getElementById("coTravelers")?.value.trim() || "";
       const transactionId = document.getElementById("transactionId")?.value.trim() || "Pay on Board / Pending";
       const specialNote = document.getElementById("specialNote")?.value.trim() || "";
-      const totalAmount = seats * RATE_PER_SEAT;
+      const totalAmount = seats * getRatePerSeat();
 
       // Phone validation
       const phoneRegex = /^[6-9]\d{9}$/;

@@ -61,6 +61,55 @@
 </head>
 <body class="text-slate-800 antialiased min-h-screen flex flex-col">
 
+  <!-- ========================================================================= -->
+  <!-- FULLSCREEN ADMIN PASSWORD AUTHENTICATION OVERLAY -->
+  <!-- ========================================================================= -->
+  <div id="adminAuthOverlay" class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-[9999] flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-8 shadow-2xl border border-slate-200 text-center relative overflow-hidden">
+      <!-- Ambient Glows -->
+      <div class="absolute -top-10 -right-10 w-28 h-28 bg-amber-400/20 rounded-full blur-2xl pointer-events-none"></div>
+      <div class="absolute -bottom-10 -left-10 w-28 h-28 bg-orange-500/20 rounded-full blur-2xl pointer-events-none"></div>
+
+      <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-saffron to-deepSaffron text-white flex items-center justify-center text-2xl mx-auto shadow-lg shadow-orange-500/30 mb-4">
+        <i class="fas fa-lock"></i>
+      </div>
+
+      <h2 class="text-xl font-extrabold text-slate-900 tracking-tight">व्यवस्थापक सुरक्षा सत्यापन</h2>
+      <p class="text-xs text-slate-500 mt-1 mb-5">ShiVe Tours & Travels — खाटू श्याम जी यात्रा व्यवस्थापक पोर्टल</p>
+
+      <form id="adminLoginForm" onsubmit="handleAdminLogin(event)" class="space-y-4 text-left">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1.5" for="adminPasswordInput">
+            <i class="fas fa-key text-amber-500 mr-1"></i> एडमिन पासवर्ड (Admin Password)
+          </label>
+          <div class="relative">
+            <input type="password" id="adminPasswordInput" class="w-full pl-3.5 pr-10 py-3 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-saffron focus:border-transparent transition" placeholder="पासवर्ड दर्ज करें..." required autofocus>
+            <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-sm focus:outline-none" title="पासवर्ड देखें / छिपाएं">
+              <i class="far fa-eye" id="eyeIcon"></i>
+            </button>
+          </div>
+        </div>
+
+        <div id="adminAuthError" class="hidden p-3 rounded-xl bg-red-50 border border-red-200 text-red-600 text-xs font-semibold flex items-center gap-2">
+          <i class="fas fa-exclamation-triangle text-sm"></i>
+          <span>गलत पासवर्ड! कृपया सही पासवर्ड दर्ज करें।</span>
+        </div>
+
+        <button type="submit" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-saffron to-deepSaffron text-white font-bold text-sm shadow-md shadow-orange-500/25 hover:opacity-95 active:scale-[0.98] transition flex items-center justify-center gap-2">
+          <i class="fas fa-unlock-alt"></i>
+          <span>पैनल अनलॉक करें (Login)</span>
+        </button>
+      </form>
+
+      <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
+        <a href="index.html" class="hover:text-slate-600 transition flex items-center gap-1">
+          <i class="fas fa-arrow-left"></i> मुख्य वेबसाइट पर जाएं
+        </a>
+        <span><i class="fas fa-shield-alt text-emerald-500"></i> पासवर्ड संरक्षित</span>
+      </div>
+    </div>
+  </div>
+
   <!-- Top Navigation -->
   <header class="bg-slate-900 text-white shadow-lg sticky top-0 z-50 border-b-2 border-saffron">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex justify-between items-center flex-wrap gap-4">
@@ -94,6 +143,11 @@
         <a href="index.html" target="_blank" class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 transition">
           <i class="fas fa-external-link-alt mr-1"></i> मुख्य वेबसाइट
         </a>
+
+        <!-- Lock / Logout Button -->
+        <button type="button" onclick="logoutAdmin()" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-red-600/20 text-red-400 border border-red-500/30 hover:bg-red-600 hover:text-white transition" title="व्यवस्थापक पैनल लॉक करें">
+          <i class="fas fa-lock mr-1"></i> लॉक / लॉगआउट
+        </button>
       </div>
     </div>
   </header>
@@ -111,7 +165,7 @@
         <i class="fab fa-whatsapp text-waGreen"></i> <span>WhatsApp सूचना (Broadcast)</span>
       </button>
       <button type="button" onclick="switchTab('tabSettings')" id="navTabSettings" class="tab-btn px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 text-slate-600 hover:bg-slate-100 transition">
-        <i class="fas fa-sliders text-indigo-600"></i> <span>यात्रा सेटिंग्स व फोटो</span>
+        <i class="fas fa-sliders text-indigo-600"></i> <span>वेबसाइट सामग्री व सेटिंग्स (Full CMS)</span>
       </button>
     </div>
   </div>
@@ -380,77 +434,538 @@
     </div>
 
     <!-- ========================================================================= -->
-    <!-- TAB 4: TRIP SETTINGS & IMAGES -->
+    <!-- TAB 4: COMPLETE SITE CONTENT MANAGEMENT & CMS -->
     <!-- ========================================================================= -->
     <div id="tabSettings" class="tab-pane hidden">
-      <div class="max-w-4xl mx-auto space-y-6">
+      <div class="max-w-5xl mx-auto space-y-6">
 
-        <!-- Trip Info & Organizer Settings -->
-        <div class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm">
-          <h2 class="text-lg font-bold text-slate-900 mb-4 pb-3 border-b border-slate-100 flex items-center gap-2">
-            <i class="fas fa-cog text-saffron"></i> <span>यात्रा एवं संपर्क सेटिंग्स (Trip Information)</span>
-          </h2>
+        <!-- Top Header & Actions Bar -->
+        <div class="bg-gradient-to-r from-slate-900 to-slate-800 rounded-3xl p-6 sm:p-8 text-white shadow-xl border border-slate-700/60 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+          <div>
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-saffron/20 text-amber-400 text-xs font-bold border border-saffron/30 mb-2">
+              <i class="fas fa-magic"></i> लाइव वेबसाइट सामग्री प्रबंधन (Live CMS)
+            </div>
+            <h2 class="text-2xl font-black tracking-tight">वेबसाइट सामग्री व सेटिंग्स (Full CMS)</h2>
+            <p class="text-xs sm:text-sm text-slate-300 mt-1 max-w-xl">
+              यहाँ से आप वेबसाइट का लोगो, तस्वीरें, हिंदी व अंग्रेजी टेक्स्ट, किराया, पिकअप पॉइंट व सभी सूचनाएं बिना किसी कोडिंग के तुरंत बदल सकते हैं।
+            </p>
+          </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">एजेंसी का नाम</label>
-              <input type="text" id="cfgAgencyName" value="ShiVe Tours and Travels" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm bg-slate-50" readonly>
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">गंतव्य (Destination)</label>
-              <input type="text" id="cfgDestination" value="श्री खाटू श्याम जी (31-10-2026)" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm bg-slate-50" readonly>
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">हेल्पलाइन / WhatsApp नंबर</label>
-              <input type="text" id="cfgPhone" value="+91 9243714402" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-saffron">
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">टिकट शुल्क (प्रति व्यक्ति)</label>
-              <input type="text" id="cfgFare" value="₹900 (भोजन + डीजे शामिल)" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-saffron">
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">UPI ID (पेमेंट हेतु)</label>
-              <input type="text" id="cfgUpi" value="shivetours@upi" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-saffron">
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">पिकअप समय व स्थान</label>
-              <input type="text" id="cfgPickups" value="Amity Jaipur 9:00 AM | Amer Road 9:45 AM" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm bg-slate-50" readonly>
-            </div>
+          <div class="flex items-center gap-3 flex-wrap">
+            <button type="button" onclick="saveAllAdminSettings()" class="px-5 py-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-black text-sm shadow-lg shadow-emerald-600/30 active:scale-95 transition flex items-center gap-2">
+              <i class="fas fa-save text-lg"></i>
+              <span>वेबसाइट पर सेव करें (Save)</span>
+            </button>
+            <a href="index.html" target="_blank" class="px-4 py-3 rounded-2xl bg-slate-700 hover:bg-slate-600 text-white font-bold text-xs shadow-md transition flex items-center gap-1.5">
+              <i class="fas fa-external-link-alt"></i> लाइव देखें
+            </a>
           </div>
         </div>
 
-        <!-- Image Gallery Management -->
-        <div class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm">
-          <h2 class="text-lg font-bold text-slate-900 mb-4 pb-3 border-b border-slate-100 flex items-center gap-2">
-            <i class="fas fa-images text-indigo-600"></i> <span>वेबसाइट तस्वीरें (Images Manager)</span>
-          </h2>
+        <!-- Quick Backup / Reset Row -->
+        <div class="flex items-center justify-between flex-wrap gap-3 bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm text-xs">
+          <div class="text-slate-500 font-medium flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+            <span>केंद्रीय कॉन्फ़िगरेशन: <strong>लोकल स्टोरेज व सर्वर डिस्क सिंक्रोनाइज़्ड</strong></span>
+          </div>
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="exportConfigJson()" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition flex items-center gap-1.5" title="सेटिंग्स की बैकअप JSON फाइल डाउनलोड करें">
+              <i class="fas fa-download text-slate-500"></i> बैकअप डाउनलोड
+            </button>
+            <button type="button" onclick="document.getElementById('adminImportFile').click()" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition flex items-center gap-1.5" title="पहले से ली गई बैकअप JSON फाइल अपलोड करें">
+              <i class="fas fa-upload text-slate-500"></i> बैकअप रीस्टोर
+            </button>
+            <input type="file" id="adminImportFile" accept=".json" class="hidden" onchange="handleImportFile(event)">
+            <button type="button" onclick="resetAllAdminSettings()" class="px-3 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold border border-rose-200 transition flex items-center gap-1.5" title="फैक्ट्री डिफ़ॉल्ट सेटिंग्स वापस लाएं">
+              <i class="fas fa-undo"></i> डिफ़ॉल्ट रीसेट
+            </button>
+          </div>
+        </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Image 1 -->
-            <div class="border border-slate-200 rounded-2xl p-4 bg-slate-50 flex flex-col justify-between">
-              <div>
-                <span class="text-xs font-bold text-saffron uppercase">मुख्य फोटो 1 (Hero Image)</span>
-                <h3 class="font-bold text-slate-800 text-sm mt-0.5">भगवान श्री खाटू श्याम जी अलौकिक विग्रह</h3>
-                <div class="mt-3 rounded-xl overflow-hidden h-44 bg-slate-200 border border-slate-300">
-                  <img src="assets/images/shyam_baba.jpg" alt="Shyam Baba" class="w-full h-full object-cover">
-                </div>
-                <p class="text-xs text-slate-500 mt-2">फ़ाइल पाथ: <code>assets/images/shyam_baba.jpg</code></p>
-              </div>
+        <!-- CMS FORM CONTAINER -->
+        <form id="adminCmsForm" onsubmit="event.preventDefault(); saveAllAdminSettings();" class="space-y-6">
+
+          <!-- 1. AGENCY BRANDING, LOGO & CONTACT DETAILS -->
+          <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-5">
+            <div class="border-b border-slate-100 pb-3 flex items-center justify-between">
+              <h3 class="text-base font-extrabold text-slate-900 flex items-center gap-2">
+                <span class="w-7 h-7 rounded-lg bg-orange-100 text-saffron flex items-center justify-center text-sm"><i class="fas fa-building"></i></span>
+                <span>1. एजेंसी ब्रांडिंग, लोगो व संपर्क सूत्र (Branding & Contact)</span>
+              </h3>
             </div>
 
-            <!-- Image 2 -->
-            <div class="border border-slate-200 rounded-2xl p-4 bg-slate-50 flex flex-col justify-between">
-              <div>
-                <span class="text-xs font-bold text-indigo-600 uppercase">मुख्य फोटो 2 (Temple Toran Dwar)</span>
-                <h3 class="font-bold text-slate-800 text-sm mt-0.5">श्री खाटू श्याम जी मंदिर तोरण द्वार</h3>
-                <div class="mt-3 rounded-xl overflow-hidden h-44 bg-slate-200 border border-slate-300">
-                  <img src="assets/images/khatu_dwar.jpg" alt="Khatu Dwar" class="w-full h-full object-cover">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <!-- Agency Name -->
+              <div class="sm:col-span-2">
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">एजेंसी / टूर का नाम (Agency Name)</label>
+                <input type="text" id="adminCfgAgencyName" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-saffron font-bold text-slate-800">
+              </div>
+
+              <!-- Logo Upload & Preview -->
+              <div class="sm:col-span-2 border border-dashed border-slate-300 rounded-2xl p-4 bg-slate-50">
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">वेबसाइट लोगो (Agency Logo)</label>
+                <div class="flex items-center gap-4 flex-wrap">
+                  <div class="w-16 h-16 rounded-xl border border-slate-300 bg-white overflow-hidden flex items-center justify-center shadow-sm shrink-0" id="adminLogoPreviewWrap">
+                    <img id="adminLogoPreview" src="" alt="Logo" class="w-full h-full object-contain hidden">
+                    <span id="adminLogoPlaceholder" class="text-xs text-slate-400 font-bold text-center p-1">डिफ़ॉल्ट ॐ</span>
+                  </div>
+                  <div class="flex-1 min-w-[240px] space-y-2">
+                    <input type="text" id="adminCfgLogoImage" placeholder="लोगो इमेज URL या नीचे से फाइल चुनें..." class="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-xs bg-white focus:outline-none focus:border-saffron">
+                    <div class="flex items-center gap-2">
+                      <label class="px-3 py-1.5 rounded-xl bg-saffron text-white text-xs font-bold cursor-pointer hover:bg-deepSaffron transition inline-flex items-center gap-1.5 shadow-sm">
+                        <i class="fas fa-folder-open"></i> <span>कंप्यूटर से फोटो चुनें</span>
+                        <input type="file" id="adminUploadLogo" accept="image/*" class="hidden" onchange="handleImageFileUpload(event, 'adminCfgLogoImage', 'adminLogoPreview', 'adminLogoPlaceholder')">
+                      </label>
+                      <button type="button" onclick="clearLogoImage()" class="px-3 py-1.5 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-semibold transition">
+                        डिफ़ॉल्ट ॐ आइकन लगाएं
+                      </button>
+                    </div>
+                  </div>
                 </div>
-                <p class="text-xs text-slate-500 mt-2">फ़ाइल पाथ: <code>assets/images/khatu_dwar.jpg</code></p>
+              </div>
+
+              <!-- Tagline Hi & En -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">टैगलाइन (हिंदी)</label>
+                <input type="text" id="adminCfgAgencyTagline_hi" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-saffron">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Tagline (English)</label>
+                <input type="text" id="adminCfgAgencyTagline_en" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-saffron">
+              </div>
+
+              <!-- Phone & WhatsApp -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">हेल्पलाइन फोन नंबर</label>
+                <input type="text" id="adminCfgPhone" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-saffron">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">WhatsApp नंबर</label>
+                <input type="text" id="adminCfgWhatsapp" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-saffron">
+              </div>
+
+              <!-- Email & Raw WA -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">सपोर्ट ईमेल (Email ID)</label>
+                <input type="email" id="adminCfgEmail" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-saffron">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">UPI ID (ऑनलाइन भुगतान हेतु)</label>
+                <input type="text" id="adminCfgUpiId" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-saffron">
+              </div>
+
+              <!-- Address Hi & En -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">कार्यालय पता (हिंदी)</label>
+                <input type="text" id="adminCfgAddress_hi" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-saffron">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Office Address (English)</label>
+                <input type="text" id="adminCfgAddress_en" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-saffron">
               </div>
             </div>
           </div>
-        </div>
+
+          <!-- 2. TRIP SPECIFICATIONS, DATES & FARE -->
+          <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-5">
+            <div class="border-b border-slate-100 pb-3 flex items-center justify-between">
+              <h3 class="text-base font-extrabold text-slate-900 flex items-center gap-2">
+                <span class="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center text-sm"><i class="fas fa-calendar-check"></i></span>
+                <span>2. यात्रा विवरण, दिनांक व टिकट शुल्क (Trip Specifications & Pricing)</span>
+              </h3>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <!-- Destination Hi & En -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">गंतव्य (हिंदी)</label>
+                <input type="text" id="adminCfgDestination_hi" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-saffron">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Destination (English)</label>
+                <input type="text" id="adminCfgDestination_en" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-saffron">
+              </div>
+
+              <!-- Trip Date Display Hi & En -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">यात्रा दिनांक डिस्प्ले (हिंदी)</label>
+                <input type="text" id="adminCfgTripDateDisplay_hi" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-saffron">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Date Display (English)</label>
+                <input type="text" id="adminCfgTripDateDisplay_en" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-saffron">
+              </div>
+
+              <!-- Departure Time Hi & En -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">प्रस्थान समय (हिंदी)</label>
+                <input type="text" id="adminCfgTripTimeDisplay_hi" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-saffron">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Departure Time (English)</label>
+                <input type="text" id="adminCfgTripTimeDisplay_en" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-saffron">
+              </div>
+
+              <!-- Trip Date ISO for countdown -->
+              <div class="sm:col-span-2">
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">
+                  उलटी गिनती टाइमर हेतु दिनांक स्ट्रिंग (ISO Countdown Date)
+                  <span class="text-slate-400 font-normal lowercase">(उदाहरण: 2026-10-31T09:00:00+05:30)</span>
+                </label>
+                <input type="text" id="adminCfgTripDateStr" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-saffron font-mono">
+              </div>
+
+              <!-- Fare & Inclusions Note -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">प्रति सीट किराया ₹ (Ticket Fare per Seat)</label>
+                <input type="number" id="adminCfgTripFare" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm font-extrabold text-emerald-600 focus:outline-none focus:border-saffron">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">किराया नोट (हिंदी)</label>
+                <input type="text" id="adminCfgTripFareNote_hi" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-saffron">
+              </div>
+              <div class="sm:col-span-2">
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Fare Inclusions Note (English)</label>
+                <input type="text" id="adminCfgTripFareNote_en" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-saffron">
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. HERO SECTION & DEVOTIONAL TICKERS -->
+          <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-5">
+            <div class="border-b border-slate-100 pb-3 flex items-center justify-between">
+              <h3 class="text-base font-extrabold text-slate-900 flex items-center gap-2">
+                <span class="w-7 h-7 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center text-sm"><i class="fas fa-bullhorn"></i></span>
+                <span>3. मुख्य बैनर व हीरो सेक्शन (Hero Section & Tickers)</span>
+              </h3>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <!-- Top Ticker Hi & En -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">ऊपर की पावन टिकर पट्टी (हिंदी)</label>
+                <input type="text" id="adminCfgTicker_hi" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-saffron">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Top Ticker Bar (English)</label>
+                <input type="text" id="adminCfgTicker_en" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-saffron">
+              </div>
+
+              <!-- Hero Badge Hi & En -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">हीरो बैज पट्टी (हिंदी)</label>
+                <input type="text" id="adminCfgHeroBadge_hi" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-saffron">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Hero Badge Pill (English)</label>
+                <input type="text" id="adminCfgHeroBadge_en" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-saffron">
+              </div>
+
+              <!-- Hero Title Hi & En -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">हीरो मुख्य शीर्षक (हिंदी)</label>
+                <input type="text" id="adminCfgHeroTitle_hi" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-saffron font-bold">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Hero Main Title (English)</label>
+                <input type="text" id="adminCfgHeroTitle_en" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-saffron font-bold">
+              </div>
+
+              <!-- Hero Sub-Title Hi & En -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">हीरो उप-शीर्षक (हिंदी)</label>
+                <input type="text" id="adminCfgHeroTitleSub_hi" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-saffron">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Hero Sub-Title (English)</label>
+                <input type="text" id="adminCfgHeroTitleSub_en" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-saffron">
+              </div>
+
+              <!-- Hero Subtitle Paragraph Hi & En -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">हीरो परिचय पैराग्राफ (हिंदी)</label>
+                <textarea id="adminCfgHeroSubtitle_hi" rows="2" class="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-saffron"></textarea>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Hero Intro Paragraph (English)</label>
+                <textarea id="adminCfgHeroSubtitle_en" rows="2" class="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-saffron"></textarea>
+              </div>
+
+              <!-- Hero Buttons Hi & En -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">बुकिंग बटन टेक्स्ट (हिंदी)</label>
+                <input type="text" id="adminCfgHeroBtnBook_hi" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-saffron">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Book Button Label (English)</label>
+                <input type="text" id="adminCfgHeroBtnBook_en" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-saffron">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">यात्रा विवरण बटन टेक्स्ट (हिंदी)</label>
+                <input type="text" id="adminCfgHeroBtnItin_hi" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-saffron">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Itinerary Button Label (English)</label>
+                <input type="text" id="adminCfgHeroBtnItin_en" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-saffron">
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. PICKUP POINTS & TIMINGS -->
+          <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-5">
+            <div class="border-b border-slate-100 pb-3 flex items-center justify-between">
+              <h3 class="text-base font-extrabold text-slate-900 flex items-center gap-2">
+                <span class="w-7 h-7 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center text-sm"><i class="fas fa-map-marker-alt"></i></span>
+                <span>4. पिकअप पॉइंट व समय (Pickup Points & Timings)</span>
+              </h3>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <!-- Pickup 1 -->
+              <div class="border border-slate-200 rounded-2xl p-4 bg-slate-50 space-y-3">
+                <span class="text-xs font-bold text-indigo-600 uppercase flex items-center gap-1">
+                  <i class="fas fa-university"></i> पहला पिकअप पॉइंट (Pickup 1)
+                </span>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">पिकअप 1 नाम (हिंदी)</label>
+                  <input type="text" id="adminCfgPickup1_name_hi" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs bg-white focus:outline-none focus:border-saffron">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Pickup 1 Name (English)</label>
+                  <input type="text" id="adminCfgPickup1_name_en" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs bg-white focus:outline-none focus:border-saffron">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">पिकअप 1 समय (हिंदी)</label>
+                  <input type="text" id="adminCfgPickup1_time_hi" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs bg-white focus:outline-none focus:border-saffron">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Pickup 1 Time (English)</label>
+                  <input type="text" id="adminCfgPickup1_time_en" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs bg-white focus:outline-none focus:border-saffron">
+                </div>
+              </div>
+
+              <!-- Pickup 2 -->
+              <div class="border border-slate-200 rounded-2xl p-4 bg-slate-50 space-y-3">
+                <span class="text-xs font-bold text-emerald-600 uppercase flex items-center gap-1">
+                  <i class="fas fa-road"></i> दूसरा पिकअप पॉइंट (Pickup 2)
+                </span>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">पिकअप 2 नाम (हिंदी)</label>
+                  <input type="text" id="adminCfgPickup2_name_hi" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs bg-white focus:outline-none focus:border-saffron">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Pickup 2 Name (English)</label>
+                  <input type="text" id="adminCfgPickup2_name_en" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs bg-white focus:outline-none focus:border-saffron">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">पिकअप 2 समय (हिंदी)</label>
+                  <input type="text" id="adminCfgPickup2_time_hi" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs bg-white focus:outline-none focus:border-saffron">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 mb-1">Pickup 2 Time (English)</label>
+                  <input type="text" id="adminCfgPickup2_time_en" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs bg-white focus:outline-none focus:border-saffron">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 5. KEY FACILITIES & FEATURES (4 CARDS) -->
+          <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-5">
+            <div class="border-b border-slate-100 pb-3 flex items-center justify-between">
+              <h3 class="text-base font-extrabold text-slate-900 flex items-center gap-2">
+                <span class="w-7 h-7 rounded-lg bg-teal-100 text-teal-600 flex items-center justify-center text-sm"><i class="fas fa-star"></i></span>
+                <span>5. मुख्य 4 सुविधाएं एवं विशेषताएं (4 Features)</span>
+              </h3>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Feature 1: Food -->
+              <div class="border border-slate-200 rounded-2xl p-4 bg-slate-50 space-y-2">
+                <span class="text-xs font-bold text-amber-600 uppercase flex items-center gap-1.5">
+                  <i class="fas fa-bowl-rice"></i> सुविधा 1: भोजन (Meals)
+                </span>
+                <div>
+                  <label class="block text-[11px] font-semibold text-slate-600 mb-0.5">शीर्षक (हिंदी)</label>
+                  <input type="text" id="adminCfgFeatFoodTitle_hi" class="w-full px-3 py-1.5 border border-slate-200 rounded-lg text-xs bg-white">
+                </div>
+                <div>
+                  <label class="block text-[11px] font-semibold text-slate-600 mb-0.5">Title (English)</label>
+                  <input type="text" id="adminCfgFeatFoodTitle_en" class="w-full px-3 py-1.5 border border-slate-200 rounded-lg text-xs bg-white">
+                </div>
+                <div>
+                  <label class="block text-[11px] font-semibold text-slate-600 mb-0.5">विवरण (हिंदी)</label>
+                  <textarea id="adminCfgFeatFoodDesc_hi" rows="2" class="w-full px-3 py-1.5 border border-slate-200 rounded-lg text-xs bg-white"></textarea>
+                </div>
+                <div>
+                  <label class="block text-[11px] font-semibold text-slate-600 mb-0.5">Description (English)</label>
+                  <textarea id="adminCfgFeatFoodDesc_en" rows="2" class="w-full px-3 py-1.5 border border-slate-200 rounded-lg text-xs bg-white"></textarea>
+                </div>
+              </div>
+
+              <!-- Feature 2: DJ -->
+              <div class="border border-slate-200 rounded-2xl p-4 bg-slate-50 space-y-2">
+                <span class="text-xs font-bold text-purple-600 uppercase flex items-center gap-1.5">
+                  <i class="fas fa-compact-disc"></i> सुविधा 2: ऑन-बोर्ड डीजे (DJ on Wheels)
+                </span>
+                <div>
+                  <label class="block text-[11px] font-semibold text-slate-600 mb-0.5">शीर्षक (हिंदी)</label>
+                  <input type="text" id="adminCfgFeatDjTitle_hi" class="w-full px-3 py-1.5 border border-slate-200 rounded-lg text-xs bg-white">
+                </div>
+                <div>
+                  <label class="block text-[11px] font-semibold text-slate-600 mb-0.5">Title (English)</label>
+                  <input type="text" id="adminCfgFeatDjTitle_en" class="w-full px-3 py-1.5 border border-slate-200 rounded-lg text-xs bg-white">
+                </div>
+                <div>
+                  <label class="block text-[11px] font-semibold text-slate-600 mb-0.5">विवरण (हिंदी)</label>
+                  <textarea id="adminCfgFeatDjDesc_hi" rows="2" class="w-full px-3 py-1.5 border border-slate-200 rounded-lg text-xs bg-white"></textarea>
+                </div>
+                <div>
+                  <label class="block text-[11px] font-semibold text-slate-600 mb-0.5">Description (English)</label>
+                  <textarea id="adminCfgFeatDjDesc_en" rows="2" class="w-full px-3 py-1.5 border border-slate-200 rounded-lg text-xs bg-white"></textarea>
+                </div>
+              </div>
+
+              <!-- Feature 3: Luxury Bus -->
+              <div class="border border-slate-200 rounded-2xl p-4 bg-slate-50 space-y-2">
+                <span class="text-xs font-bold text-blue-600 uppercase flex items-center gap-1.5">
+                  <i class="fas fa-bus-alt"></i> सुविधा 3: लग्जरी वाहन (Luxury Coach)
+                </span>
+                <div>
+                  <label class="block text-[11px] font-semibold text-slate-600 mb-0.5">शीर्षक (हिंदी)</label>
+                  <input type="text" id="adminCfgFeatBusTitle_hi" class="w-full px-3 py-1.5 border border-slate-200 rounded-lg text-xs bg-white">
+                </div>
+                <div>
+                  <label class="block text-[11px] font-semibold text-slate-600 mb-0.5">Title (English)</label>
+                  <input type="text" id="adminCfgFeatBusTitle_en" class="w-full px-3 py-1.5 border border-slate-200 rounded-lg text-xs bg-white">
+                </div>
+                <div>
+                  <label class="block text-[11px] font-semibold text-slate-600 mb-0.5">विवरण (हिंदी)</label>
+                  <textarea id="adminCfgFeatBusDesc_hi" rows="2" class="w-full px-3 py-1.5 border border-slate-200 rounded-lg text-xs bg-white"></textarea>
+                </div>
+                <div>
+                  <label class="block text-[11px] font-semibold text-slate-600 mb-0.5">Description (English)</label>
+                  <textarea id="adminCfgFeatBusDesc_en" rows="2" class="w-full px-3 py-1.5 border border-slate-200 rounded-lg text-xs bg-white"></textarea>
+                </div>
+              </div>
+
+              <!-- Feature 4: Pick & Drop -->
+              <div class="border border-slate-200 rounded-2xl p-4 bg-slate-50 space-y-2">
+                <span class="text-xs font-bold text-emerald-600 uppercase flex items-center gap-1.5">
+                  <i class="fas fa-route"></i> सुविधा 4: पिकअप & ड्रॉप (Pickup & Drop)
+                </span>
+                <div>
+                  <label class="block text-[11px] font-semibold text-slate-600 mb-0.5">शीर्षक (हिंदी)</label>
+                  <input type="text" id="adminCfgFeatPickupTitle_hi" class="w-full px-3 py-1.5 border border-slate-200 rounded-lg text-xs bg-white">
+                </div>
+                <div>
+                  <label class="block text-[11px] font-semibold text-slate-600 mb-0.5">Title (English)</label>
+                  <input type="text" id="adminCfgFeatPickupTitle_en" class="w-full px-3 py-1.5 border border-slate-200 rounded-lg text-xs bg-white">
+                </div>
+                <div>
+                  <label class="block text-[11px] font-semibold text-slate-600 mb-0.5">विवरण (हिंदी)</label>
+                  <textarea id="adminCfgFeatPickupDesc_hi" rows="2" class="w-full px-3 py-1.5 border border-slate-200 rounded-lg text-xs bg-white"></textarea>
+                </div>
+                <div>
+                  <label class="block text-[11px] font-semibold text-slate-600 mb-0.5">Description (English)</label>
+                  <textarea id="adminCfgFeatPickupDesc_en" rows="2" class="w-full px-3 py-1.5 border border-slate-200 rounded-lg text-xs bg-white"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 6. TEMPLE DARSHAN SECTION -->
+          <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-5">
+            <div class="border-b border-slate-100 pb-3 flex items-center justify-between">
+              <h3 class="text-base font-extrabold text-slate-900 flex items-center gap-2">
+                <span class="w-7 h-7 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center text-sm"><i class="fas fa-gopuram"></i></span>
+                <span>6. पवित्र तोरण द्वार एवं मंदिर दर्शन विवरण (Temple Darshan Section)</span>
+              </h3>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">मंदिर दर्शन शीर्षक (हिंदी)</label>
+                <input type="text" id="adminCfgTempleTitle_hi" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-saffron">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Temple Section Title (English)</label>
+                <input type="text" id="adminCfgTempleTitle_en" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-saffron">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">मंदिर दर्शन विवरण (हिंदी)</label>
+                <textarea id="adminCfgTempleDesc_hi" rows="2" class="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-saffron"></textarea>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Temple Darshan Description (English)</label>
+                <textarea id="adminCfgTempleDesc_en" rows="2" class="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-saffron"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- 7. WEBSITE IMAGES MANAGER (WITH UPLOAD & PREVIEW) -->
+          <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-5">
+            <div class="border-b border-slate-100 pb-3 flex items-center justify-between">
+              <h3 class="text-base font-extrabold text-slate-900 flex items-center gap-2">
+                <span class="w-7 h-7 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center text-sm"><i class="fas fa-images"></i></span>
+                <span>7. वेबसाइट मुख्य तस्वीरें (Website Images Manager)</span>
+              </h3>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- Hero Image 1 -->
+              <div class="border border-slate-200 rounded-2xl p-4 bg-slate-50 flex flex-col justify-between space-y-3">
+                <div>
+                  <span class="text-xs font-bold text-saffron uppercase">मुख्य फोटो 1: भगवान श्री खाटू श्याम जी (Hero Image)</span>
+                  <div class="mt-2 rounded-xl overflow-hidden h-44 bg-slate-200 border border-slate-300 relative group">
+                    <img id="adminHeroPreview" src="assets/images/shyam_baba.jpg" alt="Hero Preview" class="w-full h-full object-cover">
+                  </div>
+                </div>
+                <div class="space-y-2">
+                  <input type="text" id="adminCfgHeroImage" placeholder="फोटो URL या पाथ..." class="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs bg-white focus:outline-none focus:border-saffron">
+                  <label class="w-full py-2 px-3 rounded-xl bg-saffron hover:bg-deepSaffron text-white text-xs font-bold cursor-pointer transition flex items-center justify-center gap-2 shadow-sm">
+                    <i class="fas fa-cloud-upload-alt"></i> <span>कंप्यूटर से नई फोटो अपलोड करें</span>
+                    <input type="file" id="adminUploadHero" accept="image/*" class="hidden" onchange="handleImageFileUpload(event, 'adminCfgHeroImage', 'adminHeroPreview')">
+                  </label>
+                </div>
+              </div>
+
+              <!-- Image 2: Temple Toran Dwar -->
+              <div class="border border-slate-200 rounded-2xl p-4 bg-slate-50 flex flex-col justify-between space-y-3">
+                <div>
+                  <span class="text-xs font-bold text-indigo-600 uppercase">मुख्य फोटो 2: मंदिर तोरण द्वार (Toran Dwar Image)</span>
+                  <div class="mt-2 rounded-xl overflow-hidden h-44 bg-slate-200 border border-slate-300 relative group">
+                    <img id="adminTemplePreview" src="assets/images/khatu_dwar.jpg" alt="Temple Preview" class="w-full h-full object-cover">
+                  </div>
+                </div>
+                <div class="space-y-2">
+                  <input type="text" id="adminCfgTempleImage" placeholder="फोटो URL या पाथ..." class="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs bg-white focus:outline-none focus:border-saffron">
+                  <label class="w-full py-2 px-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold cursor-pointer transition flex items-center justify-center gap-2 shadow-sm">
+                    <i class="fas fa-cloud-upload-alt"></i> <span>कंप्यूटर से नई फोटो अपलोड करें</span>
+                    <input type="file" id="adminUploadTemple" accept="image/*" class="hidden" onchange="handleImageFileUpload(event, 'adminCfgTempleImage', 'adminTemplePreview')">
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- MASTER SAVE BUTTON AT BOTTOM -->
+          <div class="sticky bottom-4 z-30 bg-white/95 backdrop-blur-md p-4 rounded-2xl border-2 border-emerald-500/40 shadow-2xl flex items-center justify-between flex-wrap gap-4">
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span class="text-xs font-bold text-slate-700">सभी बदलाव सहेजने के लिए यहाँ क्लिक करें</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <a href="index.html" target="_blank" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition">
+                <i class="fas fa-external-link-alt mr-1"></i> वेबसाइट देखें
+              </a>
+              <button type="submit" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white text-sm font-black shadow-lg shadow-emerald-500/30 active:scale-95 transition flex items-center gap-2">
+                <i class="fas fa-save text-lg"></i>
+                <span>वेबसाइट पर तुरंत सेव करें (Save All Changes)</span>
+              </button>
+            </div>
+          </div>
+
+        </form>
 
       </div>
     </div>
@@ -512,6 +1027,8 @@
     ShiVe Tours and Travels • व्यवस्थापक नियंत्रण कक्ष • Khatushyamji 31-10-2026
   </footer>
 
+  <!-- Central Configuration & Bilingual Engine -->
+  <script src="js/config.js"></script>
   <!-- Admin Script -->
   <script src="js/admin.js"></script>
 </body>
