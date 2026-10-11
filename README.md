@@ -98,24 +98,57 @@
 
 ---
 
+---
+
+## 🛡️ व्यवस्थापक नियंत्रण कक्ष (Admin Panel - `admin.html`)
+
+अपनी Google Sheets एवं WhatsApp Bot से सीधे जुड़ा एक शक्तिशाली **Admin Management Dashboard** [**`admin.html`**](file:///c:/ShiVe%20Tours/khatushyamji%2031-10-2026/admin.html) तैयार किया गया है।
+
+### 🌟 Admin Panel की मुख्य विशेषताएं:
+1. **Google Sheets से लाइव डेटा सिंक:**
+   - एक क्लिक में Google Sheet से सभी यात्रियों का ताज़ा डेटा लोड करता है।
+   - कुल बुकिंग्स, कुल बुक सीटें, कुल एकत्र राशि (Revenue), और पिकअप स्टॉप (Amity vs Amer Road) का ऑटोमैटिक हिसाब।
+2. **यात्री बुकिंग प्रबंधन (Manage Bookings):**
+   - नाम, मोबाइल नंबर या बुकिंग ID से तुरंत सर्च करें।
+   - पिकअप पॉइंट और पेमेंट स्थिति (Confirmed, Paid, Cancelled) के अनुसार फ़िल्टर करें।
+   - किसी भी यात्री की स्थिति (Status) बदलें — Google Sheets में स्वतः अपडेट होगी।
+3. **WhatsApp रसीद पुनः भेजें (Re-send Confirmation):**
+   - किसी भी यात्री के आगे WhatsApp आइकन दबाकर उसे तुरंत आधिकारिक बुकिंग रसीद पुनः भेज सकते हैं।
+4. **+ नई ऑफलाइन / नकद बुकिंग जोड़ें (Add Manual Booking):**
+   - यदि कोई यात्री फोन पर कॉल करके या नकद (Cash) देकर सीट बुक करता है, तो आप एडमिन पैनल से सीधे उसकी सीट दर्ज कर सकते हैं (यह गूगल शीट में भी जुड़ेगी और उसके WhatsApp पर रसीद भी चली जाएगी)।
+5. **यात्री सूची / बस चार्ट प्रिंट करें (Print Bus Passenger Manifest):**
+   - बस ड्राइवर और टूर कंडक्टर के लिए प्रिंट-रेडी यात्री चार्ट (हस्ताक्षर कॉलम सहित) निकालें।
+6. **Excel / CSV एक्सपोर्ट:**
+   - पूरी यात्री सूची को एक क्लिक में `.csv` फ़ाइल में डाउनलोड करें।
+7. **WhatsApp ब्रॉडकास्ट (Mass Announcement):**
+   - सभी यात्रियों को या किसी विशेष पिकअप पॉइंट (जैसे केवल Amity Jaipur) के यात्रियों को सामूहिक रिमाइंडर या दिशा-निर्देश संदेश भेजें।
+8. **यात्रा सेटिंग्स व फोटो प्रबंधन:**
+   - एजेंसी हेल्पलाइन नंबर, UPI ID, टिकट किराया, और वेबसाइट की फोटो पाथ की समीक्षा व प्रबंधन।
+
+---
+
 ## 📁 प्रोजेक्ट फ़ाइल संरचना (Project Structure)
 
 ```text
 khatushyamji 31-10-2026/
-├── index.html                  # मुख्य वेबसाइट व बुकिंग फॉर्म
-├── code.gs                     # Google Apps Script बैकएंड कोड
+├── index.html                  # मुख्य वेबसाइट व बुकिंग फॉर्म (ग्राहकों हेतु)
+├── admin.html                  # संपूर्ण व्यवस्थापक नियंत्रण कक्ष (Admin Panel)
+├── code.gs                     # Google Apps Script बैकएंड कोड (Live GET & POST)
 ├── start-whatsapp-service.bat  # 1-क्लिक व्हाट्सएप सर्वर लॉन्चर
 ├── README.md                   # संपूर्ण निर्देश व सहायता गाइड
+├── .gitignore                  # GitHub सुरक्षा व गोपनीयता नियम
 ├── css/
 │   └── style.css               # आधुनिक व आध्यात्मिक थीम, एनिमेशन व मोडल स्टाइल
 ├── js/
-│   └── script.js               # फॉर्म लॉजिक, लाइव शुल्क, ऑडियो, गूगल शीट व व्हाट्सएप कनेक्टर
+│   ├── script.js               # वेबसाइट फॉर्म लॉजिक, लाइव शुल्क, ऑडियो व कनेक्टर
+│   └── admin.js                # एडमिन पैनल इंजन (Sheets Live Sync, WhatsApp actions)
 ├── assets/
 │   └── images/
 │       ├── shyam_baba.jpg      # भगवान खाटू श्याम जी का अलौकिक विग्रह
 │       └── khatu_dwar.jpg      # खाटू श्याम जी मंदिर तोरण द्वार
 └── whatsapp-service/           # व्हाट्सएप वेब ऑटोमेशन सर्विस (Node.js + Baileys)
     ├── server.js               # बैकएंड एक्सप्रेस सर्वर एवं व्हाट्सएप बॉट
+    ├── pending-messages.json   # ऑटोमैटिक पेंडिंग मैसेज कतार
     ├── package.json
     └── public/
         └── index.html          # लाइव क्यूआर कोड व स्थिति डैशबोर्ड
@@ -126,14 +159,15 @@ khatushyamji 31-10-2026/
 ## ⚙️ कस्टमाइज़ेशन (Customization)
 
 - **व्हाट्सएप व कॉल नंबर:**
-  `js/script.js` में `const AGENCY_PHONE = "919243714402";`
+  `+91 9243714402` (पूरे सिस्टम में लागू है)
 - **गूगल शीट Web App URL:**
-  `js/script.js` में `const GOOGLE_SCRIPT_URL = "https://script.google.com/.../exec";`
-- **UPI ID बदलने के लिए:**
-  `index.html` में `shivetours@upi` को अपनी PhonePe / GPay UPI ID से बदलें।
+  `https://script.google.com/macros/s/AKfycbwEwzrbFi8Uyg1Lu3LrNtuGG1tErjPApHbNWTB6wt2AgcznWbA_Clh_fWpf1XC0dKXIDQ/exec`
+- **UPI ID:**
+  `shivetours@upi`
 
 ---
 
 || **हारे का सहारा, बाबा श्याम हमारा** ||  
 **ShiVe Tours and Travels • Jaipur**
+
 

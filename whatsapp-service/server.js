@@ -327,7 +327,7 @@ app.post('/api/send-confirmation', async (req, res) => {
     pickupPoint,
     seats = 1,
     totalAmount = 900,
-    bookingId = 'SHIVE-KSJ-XXXX',
+    bookingId,
     specialNote = ''
   } = req.body;
 
@@ -335,8 +335,13 @@ app.post('/api/send-confirmation', async (req, res) => {
     return res.status(400).json({ success: false, message: 'Phone number is required' });
   }
 
+  // Ensure genuine Booking ID (Never XXXX)
+  const finalBookingId = (bookingId && String(bookingId).trim() !== '' && !String(bookingId).includes('XXXX'))
+    ? String(bookingId).trim()
+    : ('SHIVE-KSJ-' + Math.floor(1000 + Math.random() * 9000));
+
   const bookingData = {
-    bookingId,
+    bookingId: finalBookingId,
     fullName,
     phone,
     altPhone,

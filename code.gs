@@ -68,11 +68,27 @@ function doPost(e) {
       data = e.parameter;
     }
 
-    // Generate unique Booking ID
+    // Check if this is an updateStatus request from Admin Panel
+    if (data.action === "updateStatus" && data.bookingId) {
+      var allRows = sheet.getDataRange().getValues();
+      var updated = false;
+      for (var r = 1; r < allRows.length; r++) {
+        if (String(allRows[r][0]).trim() === String(data.bookingId).trim()) {
+          sheet.getRange(r + 1, 14).setValue(data.newStatus || "Confirmed");
+          updated = true;
+          break;
+        }
+      }
+      return ContentService.createTextOutput(JSON.stringify({
+        result: updated ? "success" : "not_found",
+        message: updated ? "Status updated" : "Booking not found"
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // Generate or use unique Booking ID
     var timestamp = new Date();
     var formattedDate = Utilities.formatDate(timestamp, "Asia/Kolkata", "dd/MM/yyyy HH:mm:ss");
-    var randomSuffix = Math.floor(1000 + Math.random() * 9000);
-    var bookingId = "SHIVE-KSJ-" + randomSuffix;
+    var bookingId = data.bookingId || ("SHIVE-KSJ-" + Math.floor(1000 + Math.random() * 9000));
 
     var fullName = data.fullName || data.name || "N/A";
     var phone = data.phone || data.mobile || "N/A";
@@ -86,7 +102,7 @@ function doPost(e) {
     var transactionId = data.transactionId || "Pay on Board / Pending";
     var specialNote = data.specialNote || "None";
     var agreedTerms = (data.agreedTerms === true || data.agreedTerms === "true" || data.agreedTerms === "yes") ? "Agreed (Yes)" : "Agreed (Yes)";
-    var bookingStatus = "Confirmed (Pending Payment Verification)";
+    var bookingStatus = data.status || "Confirmed";
 
     // Append new row
     sheet.appendRow([
@@ -164,20 +180,60 @@ function doPost(e) {
 }
 
 /**
- * Handle HTTP GET Request (For connectivity testing & health check)
+ * Handle HTTP GET Request (Fetches live bookings from Google Sheet for Admin Panel)
  */
 function doGet(e) {
-  var response = {
-    status: "active",
-    service: "ShiVe Tours and Travels - Khatushyamji Trip API",
-    destination: "Khatushyam Ji (31-10-2026)",
-    fare: "₹900 including Food & DJ in Vehicle",
-    pickupPoints: ["Amity University Jaipur (9:00 AM)", "Amer Road, Jaipur"],
-    instructions: "Please send POST request with registration details."
-  };
+  try {
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var sheet = ss.getSheetByName(SHEET_NAME);
 
-  return ContentService.createTextOutput(JSON.stringify(response))
-    .setMimeType(ContentService.MimeType.JSON);
+    if (!sheet || sheet.getLastRow() <= 1) {
+      return ContentService.createTextOutput(JSON.stringify({
+        status: "success",
+        count: 0,
+        bookings: []
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    var data = sheet.getDataRange().getValues();
+    var bookings = [];
+
+    // Loop through rows (skip header row 0)
+    for (var i = 1; i < data.length; i++) {
+      var row = data[i];
+      if (!row[0] && !row[2]) continue;
+
+      bookings.push({
+        rowNumber: i + 1,
+        bookingId: String(row[0] || ""),
+        registrationDate: String(row[1] || ""),
+        fullName: String(row[2] || ""),
+        phone: String(row[3] || "").replace(/^'/, ""),
+        altPhone: String(row[4] || "").replace(/^'/, ""),
+        email: String(row[5] || ""),
+        pickupPoint: String(row[6] || ""),
+        seats: Number(row[7] || 1),
+        totalAmount: Number(row[8] || 900),
+        coTravelers: String(row[9] || ""),
+        transactionId: String(row[10] || ""),
+        agreedTerms: String(row[11] || ""),
+        specialNote: String(row[12] || ""),
+        status: String(row[13] || "Confirmed")
+      });
+    }
+
+    return ContentService.createTextOutput(JSON.stringify({
+      status: "success",
+      count: bookings.length,
+      bookings: bookings.reverse() // Most recent first
+    })).setMimeType(ContentService.MimeType.JSON);
+
+  } catch (err) {
+    return ContentService.createTextOutput(JSON.stringify({
+      status: "error",
+      message: err.toString()
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
 }
 
 /**

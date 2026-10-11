@@ -1,0 +1,29 @@
+[
+  {
+    "bookingId": "SHIVE-KSJ-4821",
+    "fullName": "Vedang Soni",
+    "phone": "9243714402",
+    "altPhone": "9926462456",
+    "email": "Sonivedang7@gmail.com",
+    "pickupPoint": "Amity University Jaipur",
+    "seats": 1,
+    "totalAmount": 900,
+    "specialNote": "",
+    "status": "sent",
+    "queuedAt": "2026-10-11T05:11:42.871Z",
+    "attempts": 1,
+    "lastError": "Connection Closed",
+    "sentAt": "2026-10-11T05:11:51.496Z"
+  },
+  {
+    "bookingId": "SHIVE-KSJ-7721",
+    "fullName": "राहुल शर्मा (Admin Test)",
+    "phone": "9243714402",
+    "pickupPoint": "Amity University Jaipur",
+    "seats": 1,
+    "totalAmount": 900,
+    "specialNote": "",
+    "status": "sent",
+    "sentAt": "2026-10-11T05:26:50.815Z"
+  }
+]

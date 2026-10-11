@@ -157,8 +157,13 @@ function initFormInteractions() {
         return;
       }
 
+      // Generate Unique Booking ID
+      const randomSuffix = Math.floor(1000 + Math.random() * 9000);
+      const bookingId = "SHIVE-KSJ-" + randomSuffix;
+
       // Prepare Submission Payload
       const payload = {
+        bookingId,
         fullName,
         phone,
         altPhone,
@@ -175,12 +180,10 @@ function initFormInteractions() {
 
       // Set Loading State
       submitBtn.disabled = true;
-      btnText.textContent = "बुकिंग दर्ज हो रही है... (Saving to Sheets)";
+      btnText.textContent = "कृपया प्रतीक्षा करें... आपकी सीट दर्ज हो रही है...";
       btnSpinner.style.display = "inline-block";
 
       try {
-        let bookingId = "SHIVE-KSJ-" + Math.floor(1000 + Math.random() * 9000);
-
         // 1. Submit to Google Sheets (code.gs)
         if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL.trim() !== "" && !GOOGLE_SCRIPT_URL.includes("PASTE_YOUR")) {
           try {
@@ -192,16 +195,16 @@ function initFormInteractions() {
               },
               body: JSON.stringify(payload)
             });
-            console.log("Data saved to Google Sheets successfully!");
+            console.log("Data saved successfully!");
           } catch (scriptErr) {
-            console.warn("Fetch to Google Script encountered network warning:", scriptErr);
+            console.warn("Network notice:", scriptErr);
           }
         }
 
         // 2. Automatically Send WhatsApp Message from Linked WhatsApp Web
         let waStatusResult = "offline"; // "sent", "queued", "offline"
         try {
-          btnText.textContent = "व्हाट्सएप संदेश भेजा जा रहा है... (Sending WhatsApp)";
+          btnText.textContent = "बुकिंग रसीद तैयार की जा रही है...";
           const waResponse = await fetch(WHATSAPP_SERVICE_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -214,10 +217,8 @@ function initFormInteractions() {
             } else {
               waStatusResult = "sent";
             }
-            console.log("WhatsApp dispatch result:", waResult);
           }
         } catch (waErr) {
-          console.log("Local WhatsApp Web bot service is not running or offline:", waErr.message);
           saveOfflineBooking(payload);
           waStatusResult = "offline";
         }
@@ -310,16 +311,11 @@ function showReceiptModal(data) {
       statusNotice.style.borderColor = "#86EFAC";
       statusNotice.style.color = "#166534";
       statusText.innerHTML = `<strong>✅ बधाई हो!</strong> आपके व्हाट्सएप नंबर <strong>(${data.phone})</strong> पर बुकिंग कन्फर्मेशन संदेश स्वतः भेज दिया गया है।`;
-    } else if (data.waStatusResult === "queued") {
-      statusNotice.style.background = "#FEF3C7";
-      statusNotice.style.borderColor = "#FDE68A";
-      statusNotice.style.color = "#B45309";
-      statusText.innerHTML = `<strong>⏳ सुरक्षित कतार (Queue):</strong> व्हाट्सएप अभी कनेक्ट नहीं है, संदेश पेंडिंग लिस्ट में सुरक्षित कर लिया गया है। जैसे ही WhatsApp कनेक्ट होगा, संदेश स्वतः पहुँच जाएगा!`;
     } else {
-      statusNotice.style.background = "#FFFBEB";
-      statusNotice.style.borderColor = "#FDE68A";
-      statusNotice.style.color = "#92400E";
-      statusText.innerHTML = `<strong>ℹ️ ऑफ़लाइन सुरक्षित:</strong> व्हाट्सएप बॉट सर्वर अभी बंद है। जब भी सर्वर चालू होगा, पेंडिंग संदेश स्वतः चला जाएगा (या आप नीचे 'WhatsApp पर भेजें' बटन से अभी भेज सकते हैं)।`;
+      statusNotice.style.background = "#F0FDF4";
+      statusNotice.style.borderColor = "#86EFAC";
+      statusNotice.style.color = "#166534";
+      statusText.innerHTML = `<strong>✅ सीट सुरक्षित:</strong> आपकी बुकिंग सफलतापूर्वक दर्ज हो गई है। आप नीचे दिए गए हरे <strong>'WhatsApp पर रसीद भेजें'</strong> बटन से भी अपनी डिजिटल रसीद प्राप्त कर सकते हैं।`;
     }
   }
 

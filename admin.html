@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>व्यवस्थापक नियंत्रण कक्ष (Admin Portal) | ShiVe Tours and Travels</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Rozha+One&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            saffron: '#FF7700',
+            deepSaffron: '#E65100',
+            waGreen: '#25D366',
+            waDark: '#128C7E',
+            gold: '#F59E0B'
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #F8FAFC;
+    }
+    .devanagari {
+      font-family: 'Rozha One', serif;
+    }
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #printManifestArea, #printManifestArea * {
+        visibility: visible;
+      }
+      #printManifestArea {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        display: block !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col">
+
+  <!-- Top Navigation -->
+  <header class="bg-slate-900 text-white shadow-lg sticky top-0 z-50 border-b-2 border-saffron">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex justify-between items-center flex-wrap gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-saffron to-deepSaffron flex items-center justify-center text-white text-xl shadow-md">
+          <i class="fas fa-user-shield"></i>
+        </div>
+        <div>
+          <h1 class="text-lg font-extrabold tracking-tight flex items-center gap-2">
+            ShiVe <span class="text-saffron">Tours & Travels</span>
+            <span class="text-xs bg-slate-800 text-amber-400 font-semibold px-2 py-0.5 rounded border border-amber-500/30">Admin Panel</span>
+          </h1>
+          <p class="text-xs text-slate-400">खाटू श्याम जी दर्शन यात्रा (31-10-2026) प्रबंधन</p>
+        </div>
+      </div>
+
+      <!-- Quick Actions & Status -->
+      <div class="flex items-center gap-3 flex-wrap">
+        <!-- Live WhatsApp Bot Indicator -->
+        <a href="http://localhost:5000" target="_blank" id="adminWaStatusPill" class="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-waGreen transition" title="WhatsApp Bot स्थिति देखें">
+          <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse" id="adminWaDot"></span>
+          <span id="adminWaStatusText">WhatsApp जाँच जारी...</span>
+        </a>
+
+        <!-- Live Google Sheets Indicator -->
+        <button type="button" id="btnSyncSheets" class="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-600 hover:text-white transition">
+          <i class="fas fa-sync-alt" id="syncIcon"></i> <span>Google Sheets सिंक</span>
+        </button>
+
+        <!-- View Website Link -->
+        <a href="index.html" target="_blank" class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 transition">
+          <i class="fas fa-external-link-alt mr-1"></i> मुख्य वेबसाइट
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <div class="bg-white border-b border-slate-200 shadow-sm sticky top-[60px] z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex gap-2 overflow-x-auto py-2">
+      <button type="button" onclick="switchTab('tabBookings')" id="navTabBookings" class="tab-btn px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 bg-saffron text-white shadow-sm transition">
+        <i class="fas fa-list-check"></i> <span>सभी बुकिंग्स (Bookings)</span>
+      </button>
+      <button type="button" onclick="switchTab('tabManualBooking')" id="navTabManualBooking" class="tab-btn px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 text-slate-600 hover:bg-slate-100 transition">
+        <i class="fas fa-user-plus text-emerald-600"></i> <span>+ नई ऑफलाइन बुकिंग</span>
+      </button>
+      <button type="button" onclick="switchTab('tabBroadcast')" id="navTabBroadcast" class="tab-btn px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 text-slate-600 hover:bg-slate-100 transition">
+        <i class="fab fa-whatsapp text-waGreen"></i> <span>WhatsApp सूचना (Broadcast)</span>
+      </button>
+      <button type="button" onclick="switchTab('tabSettings')" id="navTabSettings" class="tab-btn px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 text-slate-600 hover:bg-slate-100 transition">
+        <i class="fas fa-sliders text-indigo-600"></i> <span>यात्रा सेटिंग्स व फोटो</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 flex-1 w-full space-y-6">
+
+    <!-- KPI Metric Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <!-- Card 1: Total Bookings -->
+      <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm flex items-center justify-between">
+        <div>
+          <p class="text-xs font-bold uppercase tracking-wider text-slate-500">कुल बुकिंग्स (Records)</p>
+          <h3 class="text-2xl font-extrabold text-slate-900 mt-1" id="kpiTotalBookings">0</h3>
+          <p class="text-xs text-slate-500 mt-1">पंजीकृत यात्री समूह</p>
+        </div>
+        <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl">
+          <i class="fas fa-users"></i>
+        </div>
+      </div>
+
+      <!-- Card 2: Total Seats Booked -->
+      <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm flex items-center justify-between">
+        <div>
+          <p class="text-xs font-bold uppercase tracking-wider text-slate-500">कुल सीटें बुक (Seats)</p>
+          <h3 class="text-2xl font-extrabold text-saffron mt-1" id="kpiTotalSeats">0</h3>
+          <p class="text-xs text-slate-500 mt-1">₹900 प्रति सीट</p>
+        </div>
+        <div class="w-12 h-12 rounded-xl bg-orange-50 text-saffron flex items-center justify-center text-xl">
+          <i class="fas fa-chair"></i>
+        </div>
+      </div>
+
+      <!-- Card 3: Total Revenue -->
+      <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm flex items-center justify-between">
+        <div>
+          <p class="text-xs font-bold uppercase tracking-wider text-slate-500">कुल देय राशि (Revenue)</p>
+          <h3 class="text-2xl font-extrabold text-emerald-600 mt-1" id="kpiTotalRevenue">₹0</h3>
+          <p class="text-xs text-slate-500 mt-1">सफर + भोजन + डीजे</p>
+        </div>
+        <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl">
+          <i class="fas fa-indian-rupee-sign"></i>
+        </div>
+      </div>
+
+      <!-- Card 4: Pickup Split -->
+      <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm flex items-center justify-between">
+        <div>
+          <p class="text-xs font-bold uppercase tracking-wider text-slate-500">पिकअप विभाजन</p>
+          <div class="mt-1 flex flex-col text-xs font-bold text-slate-700">
+            <span>Amity Jaipur: <strong class="text-indigo-600" id="kpiAmitySeats">0 सीट</strong></span>
+            <span>Amer Road: <strong class="text-purple-600" id="kpiAmerSeats">0 सीट</strong></span>
+          </div>
+        </div>
+        <div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl">
+          <i class="fas fa-bus"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- TAB 1: ALL BOOKINGS MANAGER -->
+    <!-- ========================================================================= -->
+    <div id="tabBookings" class="tab-pane space-y-4">
+      <!-- Search, Filters, and Export Bar -->
+      <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm flex flex-col md:flex-row gap-3 items-center justify-between">
+        <div class="flex items-center gap-3 w-full md:w-auto flex-1">
+          <div class="relative w-full max-w-sm">
+            <i class="fas fa-search absolute left-3.5 top-3 text-slate-400 text-sm"></i>
+            <input type="text" id="searchInput" placeholder="नाम, फोन नंबर या बुकिंग ID खोजें..." class="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-saffron focus:ring-1 focus:ring-saffron">
+          </div>
+
+          <!-- Pickup Filter -->
+          <select id="filterPickup" class="px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-saffron bg-white text-slate-700">
+            <option value="ALL">सभी पिकअप स्थान</option>
+            <option value="Amity University Jaipur">Amity Jaipur</option>
+            <option value="Amer Road, Jaipur">Amer Road</option>
+          </select>
+
+          <!-- Status Filter -->
+          <select id="filterStatus" class="px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-saffron bg-white text-slate-700">
+            <option value="ALL">सभी स्थिति (Status)</option>
+            <option value="Confirmed">Confirmed</option>
+            <option value="Paid">Paid</option>
+            <option value="Cancelled">Cancelled</option>
+          </select>
+        </div>
+
+        <!-- Export Buttons -->
+        <div class="flex items-center gap-2 w-full md:w-auto justify-end">
+          <button type="button" onclick="exportToCSV()" class="px-3 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold flex items-center gap-1.5 transition">
+            <i class="fas fa-file-csv text-emerald-600"></i> <span>CSV डाउनलोड</span>
+          </button>
+          <button type="button" onclick="printPassengerManifest()" class="px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold flex items-center gap-1.5 transition shadow-sm">
+            <i class="fas fa-print text-amber-400"></i> <span>बस चार्ट प्रिंट करें</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Bookings Table -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-sm">
+            <thead>
+              <tr class="bg-slate-50 border-b border-slate-200 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                <th class="py-3.5 px-4">#</th>
+                <th class="py-3.5 px-4">बुकिंग संदर्भ</th>
+                <th class="py-3.5 px-4">यात्री विवरण</th>
+                <th class="py-3.5 px-4">पिकअप पॉइंट</th>
+                <th class="py-3.5 px-4 text-center">सीटें</th>
+                <th class="py-3.5 px-4">कुल राशि (₹)</th>
+                <th class="py-3.5 px-4">पेमेंट रेफ़रेंस</th>
+                <th class="py-3.5 px-4 text-center">स्थिति</th>
+                <th class="py-3.5 px-4 text-right">कार्रवाई (Actions)</th>
+              </tr>
+            </thead>
+            <tbody id="bookingsTableBody" class="divide-y divide-slate-100 font-medium">
+              <tr>
+                <td colspan="9" class="text-center py-12 text-slate-400">
+                  <i class="fas fa-spinner fa-spin text-2xl text-saffron mb-2"></i>
+                  <p>गूगल शीट से लाइव बुकिंग्स लोड हो रही हैं...</p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="p-3 bg-slate-50 border-t border-slate-200 flex justify-between items-center text-xs text-slate-500">
+          <span id="tableCountText">0 बुकिंग्स प्रदर्शित</span>
+          <span>Google Sheets + Local Offline Cache Synced</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- TAB 2: MANUAL OFFLINE BOOKING -->
+    <!-- ========================================================================= -->
+    <div id="tabManualBooking" class="tab-pane hidden">
+      <div class="max-w-2xl mx-auto bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm">
+        <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100">
+          <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl">
+            <i class="fas fa-user-plus"></i>
+          </div>
+          <div>
+            <h2 class="text-lg font-bold text-slate-900">ऑफलाइन / नकद बुकिंग जोड़ें</h2>
+            <p class="text-xs text-slate-500">सीट Google Sheets में जुड़ जाएगी और यात्री को WhatsApp पर रसीद चली जाएगी</p>
+          </div>
+        </div>
+
+        <form id="manualBookingForm" class="space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">यात्री का पूरा नाम *</label>
+              <input type="text" id="mFullName" required class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-saffron" placeholder="उदा. अमित कुमार">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">मोबाइल नंबर (10 अंक) *</label>
+              <input type="tel" id="mPhone" required maxlength="10" pattern="[6-9][0-9]{9}" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-saffron" placeholder="उदा. 9829012345">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">ईमेल आईडी</label>
+              <input type="email" id="mEmail" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-saffron" placeholder="उदा. amit@gmail.com">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">सीटों की संख्या *</label>
+              <input type="number" id="mSeats" min="1" max="20" value="1" required class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-saffron">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">पिकअप पॉइंट चयन *</label>
+            <select id="mPickup" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-saffron bg-white">
+              <option value="Amity University Jaipur">Amity University Jaipur (09:00 AM)</option>
+              <option value="Amer Road, Jaipur">Amer Road, Jaipur (09:45 AM)</option>
+            </select>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">भुगतान विधि / रेफ़रेंस</label>
+              <input type="text" id="mPaymentRef" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-saffron" placeholder="नकद (Cash) / UPI">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">बुकिंग स्थिति</label>
+              <select id="mStatus" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-saffron bg-white">
+                <option value="Confirmed">Confirmed</option>
+                <option value="Paid">Paid (भुगतान प्राप्त)</option>
+                <option value="Pending">Pending (भुगतान शेष)</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">साथी यात्रियों के नाम (यदि कोई हो)</label>
+            <textarea id="mCoTravelers" rows="2" class="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-saffron" placeholder="अन्य साथियों के नाम"></textarea>
+          </div>
+
+          <div class="p-3 bg-amber-50 border border-amber-200 rounded-xl flex items-center justify-between text-sm">
+            <span class="font-semibold text-amber-900">कुल देय शुल्क (Total Amount):</span>
+            <span class="font-extrabold text-amber-900 text-lg" id="mTotalAmount">₹900</span>
+          </div>
+
+          <div class="flex items-center gap-3 pt-2">
+            <button type="submit" id="btnSubmitManual" class="flex-1 py-3 px-6 rounded-xl bg-gradient-to-r from-saffron to-deepSaffron text-white font-bold hover:shadow-lg transition">
+              <i class="fas fa-check-circle mr-1"></i> बुकिंग दर्ज करें और WhatsApp भेजें
+            </button>
+            <button type="reset" class="px-5 py-3 rounded-xl border border-slate-200 text-slate-600 font-semibold hover:bg-slate-50 transition">
+              रीसेट
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- TAB 3: WHATSAPP BROADCAST -->
+    <!-- ========================================================================= -->
+    <div id="tabBroadcast" class="tab-pane hidden">
+      <div class="max-w-2xl mx-auto bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm">
+        <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100">
+          <div class="w-10 h-10 rounded-xl bg-emerald-50 text-waGreen flex items-center justify-center text-2xl">
+            <i class="fab fa-whatsapp"></i>
+          </div>
+          <div>
+            <h2 class="text-lg font-bold text-slate-900">यात्रियों को WhatsApp ब्रॉडकास्ट संदेश</h2>
+            <p class="text-xs text-slate-500">सभी बुक किए गए यात्रियों को एक क्लिक में जरूरी सूचना या रिमाइंडर भेजें</p>
+          </div>
+        </div>
+
+        <form id="broadcastForm" class="space-y-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">प्राप्तकर्ता चुनें (Recipients)</label>
+            <select id="bcTarget" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-saffron bg-white">
+              <option value="ALL">सभी पंजीकृत यात्री (All Booked Travelers)</option>
+              <option value="Amity University Jaipur">केवल एमिटी जयपुर के यात्री (Amity Jaipur Only)</option>
+              <option value="Amer Road, Jaipur">केवल आमेर रोड के यात्री (Amer Road Only)</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase mb-1">संदेश टेम्पलेट (Templates)</label>
+            <div class="flex gap-2 flex-wrap mb-2">
+              <button type="button" onclick="setBroadcastTemplate(1)" class="text-xs px-2.5 py-1 bg-slate-100 hover:bg-slate-200 rounded-lg text-slate-700 font-semibold">
+                🔔 प्रस्थान रिमाइंडर (Morning Pickup)
+              </button>
+              <button type="button" onclick="setBroadcastTemplate(2)" class="text-xs px-2.5 py-1 bg-slate-100 hover:bg-slate-200 rounded-lg text-slate-700 font-semibold">
+                ⚠️ महत्वपूर्ण दिशा-निर्देश
+              </button>
+            </div>
+            <textarea id="bcMessage" rows="6" required class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-saffron font-mono" placeholder="यहाँ अपना संदेश लिखें..."></textarea>
+          </div>
+
+          <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-600 flex items-center gap-2">
+            <i class="fas fa-info-circle text-saffron text-sm"></i>
+            <span>संदेश हर यात्री को 2.5 सेकंड के अंतराल से सुरक्षित रूप से भेजा जाएगा ताकि WhatsApp स्पैम न समझे।</span>
+          </div>
+
+          <button type="submit" id="btnSendBroadcast" class="w-full py-3 px-6 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold transition shadow-sm flex items-center justify-center gap-2">
+            <i class="fab fa-whatsapp text-lg"></i>
+            <span>सभी चयनित यात्रियों को संदेश भेजें</span>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- TAB 4: TRIP SETTINGS & IMAGES -->
+    <!-- ========================================================================= -->
+    <div id="tabSettings" class="tab-pane hidden">
+      <div class="max-w-4xl mx-auto space-y-6">
+
+        <!-- Trip Info & Organizer Settings -->
+        <div class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm">
+          <h2 class="text-lg font-bold text-slate-900 mb-4 pb-3 border-b border-slate-100 flex items-center gap-2">
+            <i class="fas fa-cog text-saffron"></i> <span>यात्रा एवं संपर्क सेटिंग्स (Trip Information)</span>
+          </h2>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">एजेंसी का नाम</label>
+              <input type="text" id="cfgAgencyName" value="ShiVe Tours and Travels" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm bg-slate-50" readonly>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">गंतव्य (Destination)</label>
+              <input type="text" id="cfgDestination" value="श्री खाटू श्याम जी (31-10-2026)" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm bg-slate-50" readonly>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">हेल्पलाइन / WhatsApp नंबर</label>
+              <input type="text" id="cfgPhone" value="+91 9243714402" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-saffron">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">टिकट शुल्क (प्रति व्यक्ति)</label>
+              <input type="text" id="cfgFare" value="₹900 (भोजन + डीजे शामिल)" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-saffron">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">UPI ID (पेमेंट हेतु)</label>
+              <input type="text" id="cfgUpi" value="shivetours@upi" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-saffron">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">पिकअप समय व स्थान</label>
+              <input type="text" id="cfgPickups" value="Amity Jaipur 9:00 AM | Amer Road 9:45 AM" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm bg-slate-50" readonly>
+            </div>
+          </div>
+        </div>
+
+        <!-- Image Gallery Management -->
+        <div class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm">
+          <h2 class="text-lg font-bold text-slate-900 mb-4 pb-3 border-b border-slate-100 flex items-center gap-2">
+            <i class="fas fa-images text-indigo-600"></i> <span>वेबसाइट तस्वीरें (Images Manager)</span>
+          </h2>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Image 1 -->
+            <div class="border border-slate-200 rounded-2xl p-4 bg-slate-50 flex flex-col justify-between">
+              <div>
+                <span class="text-xs font-bold text-saffron uppercase">मुख्य फोटो 1 (Hero Image)</span>
+                <h3 class="font-bold text-slate-800 text-sm mt-0.5">भगवान श्री खाटू श्याम जी अलौकिक विग्रह</h3>
+                <div class="mt-3 rounded-xl overflow-hidden h-44 bg-slate-200 border border-slate-300">
+                  <img src="assets/images/shyam_baba.jpg" alt="Shyam Baba" class="w-full h-full object-cover">
+                </div>
+                <p class="text-xs text-slate-500 mt-2">फ़ाइल पाथ: <code>assets/images/shyam_baba.jpg</code></p>
+              </div>
+            </div>
+
+            <!-- Image 2 -->
+            <div class="border border-slate-200 rounded-2xl p-4 bg-slate-50 flex flex-col justify-between">
+              <div>
+                <span class="text-xs font-bold text-indigo-600 uppercase">मुख्य फोटो 2 (Temple Toran Dwar)</span>
+                <h3 class="font-bold text-slate-800 text-sm mt-0.5">श्री खाटू श्याम जी मंदिर तोरण द्वार</h3>
+                <div class="mt-3 rounded-xl overflow-hidden h-44 bg-slate-200 border border-slate-300">
+                  <img src="assets/images/khatu_dwar.jpg" alt="Khatu Dwar" class="w-full h-full object-cover">
+                </div>
+                <p class="text-xs text-slate-500 mt-2">फ़ाइल पाथ: <code>assets/images/khatu_dwar.jpg</code></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ========================================================================= -->
+  <!-- PRINT PASSENGER MANIFEST MODAL / HIDDEN AREA -->
+  <!-- ========================================================================= -->
+  <div id="printManifestArea" class="hidden p-8 bg-white text-black">
+    <div class="text-center pb-4 border-b-2 border-black mb-4">
+      <h2 class="text-2xl font-bold">ShiVe Tours and Travels — यात्री सूची (Bus Chart)</h2>
+      <p class="text-sm">श्री खाटू श्याम जी दर्शन यात्रा • दिनांक: 31-10-2026 • प्रस्थान समय: प्रातः 09:00 AM</p>
+    </div>
+    <div class="mb-4 text-xs flex justify-between font-bold">
+      <span>कुल यात्री: <span id="printTotalSeats">0</span></span>
+      <span>रिपोर्टिंग समय: 08:45 AM (Amity Gate) / 09:30 AM (Amer Road)</span>
+      <span>हेल्पलाइन: +91 9243714402</span>
+    </div>
+    <table class="w-full text-xs border border-collapse border-black">
+      <thead>
+        <tr class="bg-slate-200 border-b border-black">
+          <th class="border border-black p-1.5 text-center">#</th>
+          <th class="border border-black p-1.5">बुकिंग ID</th>
+          <th class="border border-black p-1.5">यात्री का नाम</th>
+          <th class="border border-black p-1.5">मोबाइल नंबर</th>
+          <th class="border border-black p-1.5">पिकअप पॉइंट</th>
+          <th class="border border-black p-1.5 text-center">सीट संख्या</th>
+          <th class="border border-black p-1.5">कुल शुल्क ₹</th>
+          <th class="border border-black p-1.5">पेमेंट स्थिति</th>
+          <th class="border border-black p-1.5 text-center">हस्ताक्षर</th>
+        </tr>
+      </thead>
+      <tbody id="printTableBody">
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Detail Modal -->
+  <div id="bookingDetailModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl relative">
+      <button type="button" onclick="closeDetailModal()" class="absolute right-4 top-4 text-slate-400 hover:text-slate-600 text-lg">
+        <i class="fas fa-times"></i>
+      </button>
+      <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+        <i class="fas fa-id-card text-saffron"></i> <span>बुकिंग विस्तृत विवरण</span>
+      </h3>
+      <div id="bookingDetailContent" class="space-y-3 text-sm">
+      </div>
+      <div class="mt-6 pt-4 border-t border-slate-100 flex justify-end gap-2">
+        <button type="button" onclick="closeDetailModal()" class="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 font-semibold hover:bg-slate-200">
+          बंद करें
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500">
+    ShiVe Tours and Travels • व्यवस्थापक नियंत्रण कक्ष • Khatushyamji 31-10-2026
+  </footer>
+
+  <!-- Admin Script -->
+  <script src="js/admin.js"></script>
+</body>
+</html>
