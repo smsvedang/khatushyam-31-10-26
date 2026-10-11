@@ -7,12 +7,12 @@
 
 // ⚙️ CONFIGURATION: Paste your Google Apps Script Web App URL below:
 // Example: "https://script.google.com/macros/s/AKfycbx.../exec"
-const GOOGLE_SCRIPT_URL = ""; 
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwEwzrbFi8Uyg1Lu3LrNtuGG1tErjPApHbNWTB6wt2AgcznWbA_Clh_fWpf1XC0dKXIDQ/exec"; 
 
 // Trip Constants
 const RATE_PER_SEAT = 900;
 const TRIP_DATE_STR = "2026-10-31T09:00:00+05:30";
-const AGENCY_PHONE = "919876543210"; // Organizers WhatsApp/Call number
+const AGENCY_PHONE = "919243714402"; // Organizers WhatsApp/Call number
 const AGENCY_NAME = "ShiVe Tours and Travels";
 
 document.addEventListener("DOMContentLoaded", () => {
