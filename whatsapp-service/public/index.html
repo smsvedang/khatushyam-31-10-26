@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WhatsApp Web Automation Hub | ShiVe Tours</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Rozha+One&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --wa-green: #25D366;
+      --wa-dark-green: #128C7E;
+      --wa-teal: #075E54;
+      --saffron: #FF7700;
+      --bg: #F0F2F5;
+      --card-bg: #FFFFFF;
+      --text: #1E293B;
+      --muted: #64748B;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--wa-teal) 0%, var(--wa-dark-green) 100%);
+      color: white;
+      padding: 20px 24px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .header-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .brand-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-title i {
+      font-size: 2.2rem;
+      color: #A7F3D0;
+    }
+
+    .brand-title h1 {
+      font-size: 1.35rem;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+
+    .brand-title p {
+      font-size: 0.82rem;
+      opacity: 0.85;
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      background: rgba(255, 255, 255, 0.15);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .nav-links a:hover {
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    main {
+      max-width: 1100px;
+      width: 100%;
+      margin: 30px auto;
+      padding: 0 20px;
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+    }
+
+    @media (max-width: 850px) {
+      main {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 20px;
+      padding: 26px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      border: 1px solid #E2E8F0;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #F1F5F9;
+    }
+
+    .card-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Status Badges */
+    .status-badge {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-connected {
+      background: #DCFCE7;
+      color: #15803D;
+      border: 1px solid #86EFAC;
+    }
+
+    .status-qr {
+      background: #FEF3C7;
+      color: #B45309;
+      border: 1px solid #FDE68A;
+    }
+
+    .status-disconnected {
+      background: #FEE2E2;
+      color: #B91C1C;
+      border: 1px solid #FECACA;
+    }
+
+    /* QR Code Display Frame */
+    .qr-frame {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: #F8FAFC;
+      border-radius: 16px;
+      border: 2px dashed #CBD5E1;
+      min-height: 280px;
+      text-align: center;
+    }
+
+    .qr-img {
+      width: 230px;
+      height: 230px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      background: white;
+      padding: 8px;
+    }
+
+    .connected-success-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 30px 20px;
+      text-align: center;
+    }
+
+    .success-icon-wrap {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: #22C55E;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.2rem;
+      margin-bottom: 16px;
+      box-shadow: 0 8px 20px rgba(34, 197, 94, 0.4);
+    }
+
+    /* Steps list */
+    .steps-list {
+      list-style: none;
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .step-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 0.88rem;
+      color: #334155;
+    }
+
+    .step-num {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--wa-teal);
+      color: white;
+      font-size: 0.75rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    /* Test Message Form */
+    .test-form {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .form-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #334155;
+    }
+
+    .input-control {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1.5px solid #CBD5E1;
+      border-radius: 10px;
+      font-size: 0.92rem;
+      font-family: inherit;
+      color: #0F172A;
+    }
+
+    .input-control:focus {
+      outline: none;
+      border-color: var(--wa-dark-green);
+      box-shadow: 0 0 0 3px rgba(18, 140, 126, 0.15);
+    }
+
+    .btn-send-test {
+      background: var(--wa-green);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .btn-send-test:hover:not(:disabled) {
+      background: var(--wa-dark-green);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(18, 140, 126, 0.3);
+    }
+
+    .btn-send-test:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    /* Logs list */
+    .logs-wrapper {
+      margin-top: 20px;
+      max-height: 220px;
+      overflow-y: auto;
+      border: 1px solid #E2E8F0;
+      border-radius: 12px;
+    }
+
+    .log-item {
+      padding: 10px 14px;
+      border-bottom: 1px solid #F1F5F9;
+      font-size: 0.8rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .log-item:last-child { border-bottom: none; }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      border-top: 1px solid #E2E8F0;
+      background: white;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Header -->
+  <header>
+    <div class="header-container">
+      <div class="brand-title">
+        <i class="fab fa-whatsapp"></i>
+        <div>
+          <h1>ShiVe Tours & Travels</h1>
+          <p>ऑटोमैटिक व्हाट्सएप वेब कन्फर्मेशन हब (Automated WhatsApp Bot)</p>
+        </div>
+      </div>
+      <div class="nav-links">
+        <a href="http://127.0.0.1:5500/index.html" target="_blank" id="openWebsiteBtn">
+          <i class="fas fa-external-link-alt"></i> बुकिंग वेबसाइट खोलें
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Left Card: WhatsApp Connection Status & QR Code -->
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">
+          <i class="fas fa-qrcode" style="color: var(--wa-dark-green);"></i>
+          <span>व्हाट्सएप वेब कनेक्शन स्थिति</span>
+        </h2>
+        <div id="statusBadge" class="status-badge status-disconnected">
+          <i class="fas fa-circle-notch fa-spin"></i> जाँचा जा रहा है...
+        </div>
+      </div>
+
+      <!-- Dynamic QR Code or Connected View -->
+      <div id="connectionDisplay" class="qr-frame">
+        <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--muted);"></i>
+        <p style="margin-top: 12px; font-size: 0.85rem; color: var(--muted);">QR कोड लोड हो रहा है, कृपया 2 सेकंड प्रतीक्षा करें...</p>
+      </div>
+
+      <!-- Hindi Steps Guide -->
+      <ul class="steps-list">
+        <li class="step-item">
+          <span class="step-num">1</span>
+          <span>अपने मोबाइल फोन में <strong>WhatsApp</strong> खोलें।</span>
+        </li>
+        <li class="step-item">
+          <span class="step-num">2</span>
+          <span>ऊपर दाईं ओर <strong>तीन बिंदुओं (⋮)</strong> या Settings पर क्लिक करके <strong>Linked devices (लिंक्ड डिवाइसेस)</strong> चुनें।</span>
+        </li>
+        <li class="step-item">
+          <span class="step-num">3</span>
+          <span><strong>Link a device (डिवाइस लिंक करें)</strong> पर टैप करें और ऊपर दिए गए QR कोड को स्कैन करें।</span>
+        </li>
+        <li class="step-item">
+          <span class="step-num">4</span>
+          <span><strong>एक बार कनेक्ट होने के बाद</strong>, जब भी कोई वेबसाइट पर फॉर्म भरेगा, आपके व्हाट्सएप से ऑटोमैटिक कन्फर्मेशन मैसेज उसके नंबर पर तुरंत पहुँच जाएगा!</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Right Card: Test Message & Live Dispatched Activity -->
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">
+          <i class="fas fa-paper-plane" style="color: var(--saffron);"></i>
+          <span>टेस्ट मैसेज भेजें (Test Sender)</span>
+        </h2>
+        <span style="font-size: 0.75rem; color: var(--muted);">लाइव चेकिंग</span>
+      </div>
+
+      <form id="testMsgForm" class="test-form">
+        <div>
+          <label class="form-label" for="testPhone">मोबाइल नंबर (10 अंक):</label>
+          <input type="tel" id="testPhone" class="input-control" placeholder="उदा. 9876543210" maxlength="10" required>
+        </div>
+        <div>
+          <label class="form-label" for="testCustomMsg">मैसेज (Optional):</label>
+          <input type="text" id="testCustomMsg" class="input-control" placeholder="जय श्री श्याम! टेस्ट मैसेज ShiVe Tours से...">
+        </div>
+        <button type="submit" id="btnSendTest" class="btn-send-test">
+          <i class="fas fa-paper-plane"></i>
+          <span>टेस्ट मैसेज भेजें</span>
+        </button>
+      </form>
+
+      <!-- Queue Statistics & Trigger -->
+      <div style="margin-top: 24px; padding: 14px; background: #F8FAFC; border: 1.5px solid #E2E8F0; border-radius: 12px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <span style="font-size: 0.85rem; font-weight: 700; color: #1E293B;">
+            <i class="fas fa-layer-group" style="color: var(--saffron);"></i> कतार स्थिति (Queue Status)
+          </span>
+          <div style="display: flex; gap: 8px;">
+            <span id="badgePendingCount" style="background: #FEF3C7; color: #B45309; padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 700;">
+              पेंडिंग: 0
+            </span>
+            <span id="badgeSentCount" style="background: #DCFCE7; color: #15803D; padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 700;">
+              भेजे गए: 0
+            </span>
+          </div>
+        </div>
+        <button type="button" id="btnProcessQueue" style="width: 100%; background: #0F766E; color: white; border: none; padding: 8px; border-radius: 8px; font-size: 0.8rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+          <i class="fas fa-paper-plane"></i> <span>पेंडिंग मैसेज तुरंत प्रोसेस करें (Process Pending Now)</span>
+        </button>
+      </div>
+
+      <!-- Logs & Queue History -->
+      <div style="margin-top: 20px;">
+        <h3 style="font-size: 0.95rem; font-weight: 700; color: #1E293B; margin-bottom: 8px;">
+          <i class="fas fa-history" style="color: var(--wa-teal);"></i> बुकिंग मैसेज इतिहास (Live Status)
+        </h3>
+        <div id="logsContainer" class="logs-wrapper">
+          <div style="padding: 16px; text-align: center; color: var(--muted); font-size: 0.8rem;">
+            अभी तक कोई मैसेज नहीं भेजा गया है।
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    ShiVe Tours and Travels • Automated WhatsApp Dispatch Engine • खाटू श्याम जी यात्रा 2026
+  </footer>
+
+  <script>
+    const statusBadge = document.getElementById('statusBadge');
+    const connectionDisplay = document.getElementById('connectionDisplay');
+    const logsContainer = document.getElementById('logsContainer');
+    const testMsgForm = document.getElementById('testMsgForm');
+    const btnSendTest = document.getElementById('btnSendTest');
+
+    async function checkStatus() {
+      try {
+        const res = await fetch('/api/status');
+        const data = await res.json();
+
+        if (data.status === 'connected' && data.user) {
+          statusBadge.className = 'status-badge status-connected';
+          statusBadge.innerHTML = '<i class="fas fa-check-circle"></i> कनेक्टेड (Online)';
+
+          connectionDisplay.innerHTML = `
+            <div class="connected-success-box">
+              <div class="success-icon-wrap">
+                <i class="fas fa-check"></i>
+              </div>
+              <h3 style="color: #15803D; font-size: 1.25rem; font-weight: 800;">
+                WhatsApp Web सफलतापूर्वक कनेक्ट हो गया है!
+              </h3>
+              <p style="color: #334155; margin-top: 6px; font-size: 0.9rem;">
+                <strong>लिंक्ड नंबर:</strong> +${data.user.phone || ''}
+              </p>
+              <div style="background: #DCFCE7; color: #166534; padding: 8px 16px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; margin-top: 12px;">
+                🟢 बॉट सक्रिय है: फॉर्म भरते ही ऑटोमैटिक मैसेज जाएगा
+              </div>
+            </div>
+          `;
+          btnSendTest.disabled = false;
+        } else if (data.status === 'qr_ready' && data.qr) {
+          statusBadge.className = 'status-badge status-qr';
+          statusBadge.innerHTML = '<i class="fas fa-qrcode"></i> QR कोड तैयार (स्कैन करें)';
+
+          connectionDisplay.innerHTML = `
+            <img src="${data.qr}" alt="WhatsApp Web QR Code" class="qr-img">
+            <p style="margin-top: 12px; font-weight: 700; color: #1E293B; font-size: 0.95rem;">
+              कृपया अपने मोबाइल व्हाट्सएप से यह QR कोड स्कैन करें
+            </p>
+            <p style="font-size: 0.78rem; color: #64748B;">
+              (कोड हर 20 सेकंड में स्वतः रिफ्रेश होता है)
+            </p>
+          `;
+          btnSendTest.disabled = true;
+        } else {
+          statusBadge.className = 'status-badge status-disconnected';
+          statusBadge.innerHTML = '<i class="fas fa-sync-alt fa-spin"></i> कनेक्ट किया जा रहा है...';
+          connectionDisplay.innerHTML = `
+            <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--muted);"></i>
+            <p style="margin-top: 12px; font-size: 0.85rem; color: var(--muted);">WhatsApp Web प्रारंभ हो रहा है...</p>
+          `;
+          btnSendTest.disabled = true;
+        }
+
+        // Update Queue counters
+        const pendingBadge = document.getElementById('badgePendingCount');
+        const sentBadge = document.getElementById('badgeSentCount');
+        if (pendingBadge) pendingBadge.textContent = `पेंडिंग: ${data.pendingCount || 0}`;
+        if (sentBadge) sentBadge.textContent = `भेजे गए: ${data.sentCount || 0}`;
+
+        // Render Queue History & Pending items
+        if (data.queue && data.queue.length > 0) {
+          logsContainer.innerHTML = data.queue.map(item => `
+            <div class="log-item">
+              <div>
+                <strong>${item.fullName || 'यात्री'}</strong> (${item.phone})<br>
+                <span style="font-size: 0.72rem; color: #64748B;">ID: ${item.bookingId} • ${item.seats || 1} सीट • ${item.pickupPoint || ''}</span>
+              </div>
+              <div style="text-align: right;">
+                ${item.status === 'sent' 
+                  ? `<span style="color: #16A34A; font-weight: 700; font-size: 0.75rem;"><i class="fas fa-check-circle"></i> भेजा गया</span><br>
+                     <span style="font-size: 0.68rem; color: #94A3B8;">${item.sentAt ? new Date(item.sentAt).toLocaleTimeString('en-IN') : ''}</span>`
+                  : `<span style="background: #FEF3C7; color: #B45309; padding: 2px 6px; border-radius: 4px; font-weight: 700; font-size: 0.72rem;"><i class="fas fa-clock"></i> पेंडिंग (प्रतीक्षारत)</span><br>
+                     <span style="font-size: 0.68rem; color: #94A3B8;">कनेक्ट होते ही जाएगा</span>`
+                }
+              </div>
+            </div>
+          `).join('');
+        }
+      } catch (err) {
+        statusBadge.className = 'status-badge status-disconnected';
+        statusBadge.innerHTML = '<i class="fas fa-exclamation-triangle"></i> सर्वर बंद है';
+        btnSendTest.disabled = true;
+      }
+    }
+
+    // Process Queue Button Click
+    const btnProcessQueue = document.getElementById('btnProcessQueue');
+    if (btnProcessQueue) {
+      btnProcessQueue.addEventListener('click', async () => {
+        btnProcessQueue.disabled = true;
+        btnProcessQueue.innerHTML = '<i class="fas fa-spinner fa-spin"></i> प्रोसेस हो रहा है...';
+        try {
+          const res = await fetch('/api/process-queue', { method: 'POST' });
+          const result = await res.json();
+          alert(result.message);
+        } catch (e) {
+          alert('एरर: ' + e.message);
+        } finally {
+          btnProcessQueue.disabled = false;
+          btnProcessQueue.innerHTML = '<i class="fas fa-paper-plane"></i> <span>पेंडिंग मैसेज तुरंत प्रोसेस करें (Process Pending Now)</span>';
+          checkStatus();
+        }
+      });
+    }
+
+    // Handle test message submit
+    testMsgForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const phone = document.getElementById('testPhone').value.trim();
+      const message = document.getElementById('testCustomMsg').value.trim();
+
+      if (!/^[6-9]\d{9}$/.test(phone)) {
+        alert('कृपया 10 अंकों का वैध भारतीय मोबाइल नंबर दर्ज करें।');
+        return;
+      }
+
+      btnSendTest.disabled = true;
+      btnSendTest.innerHTML = '<i class="fas fa-spinner fa-spin"></i> भेजा जा रहा है...';
+
+      try {
+        const res = await fetch('/api/send-test', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phone, message })
+        });
+        const result = await res.json();
+        if (result.success) {
+          alert('✅ टेस्ट मैसेज सफलतापूर्वक भेज दिया गया!');
+          document.getElementById('testPhone').value = '';
+          document.getElementById('testCustomMsg').value = '';
+        } else {
+          alert('❌ एरर: ' + result.message);
+        }
+      } catch (err) {
+        alert('सर्वर से संपर्क नहीं हो सका: ' + err.message);
+      } finally {
+        btnSendTest.disabled = false;
+        btnSendTest.innerHTML = '<i class="fas fa-paper-plane"></i> टेस्ट मैसेज भेजें';
+        checkStatus();
+      }
+    });
+
+    // Check status every 3 seconds
+    checkStatus();
+    setInterval(checkStatus, 3000);
+  </script>
+</body>
+</html>

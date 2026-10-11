@@ -9,6 +9,10 @@
 // Example: "https://script.google.com/macros/s/AKfycbx.../exec"
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwEwzrbFi8Uyg1Lu3LrNtuGG1tErjPApHbNWTB6wt2AgcznWbA_Clh_fWpf1XC0dKXIDQ/exec"; 
 
+// 📲 WhatsApp Web Automation Service (Local Node.js Bot)
+const WHATSAPP_SERVICE_URL = "http://localhost:5000/api/send-confirmation";
+const WHATSAPP_STATUS_URL = "http://localhost:5000/api/status";
+
 // Trip Constants
 const RATE_PER_SEAT = 900;
 const TRIP_DATE_STR = "2026-10-31T09:00:00+05:30";
@@ -21,6 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initParticleEffects();
   initDevotionalAudio();
   initTermsModal();
+  checkWhatsAppBotStatus();
 });
 
 /* ==============================================================================
@@ -176,24 +181,48 @@ function initFormInteractions() {
       try {
         let bookingId = "SHIVE-KSJ-" + Math.floor(1000 + Math.random() * 9000);
 
+        // 1. Submit to Google Sheets (code.gs)
         if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL.trim() !== "" && !GOOGLE_SCRIPT_URL.includes("PASTE_YOUR")) {
-          // Send to real Google Apps Script via POST
           try {
             await fetch(GOOGLE_SCRIPT_URL, {
               method: "POST",
-              mode: "no-cors", // Standard for Google Apps Script Web Apps to prevent cross-origin block
+              mode: "no-cors",
               headers: {
                 "Content-Type": "application/json"
               },
               body: JSON.stringify(payload)
             });
+            console.log("Data saved to Google Sheets successfully!");
           } catch (scriptErr) {
             console.warn("Fetch to Google Script encountered network warning:", scriptErr);
           }
-        } else {
-          // Demo / Local preview mode if user hasn't deployed code.gs yet
-          console.info("Running in local simulation mode. To save directly to Google Sheets, configure GOOGLE_SCRIPT_URL in js/script.js.");
         }
+
+        // 2. Automatically Send WhatsApp Message from Linked WhatsApp Web
+        let waStatusResult = "offline"; // "sent", "queued", "offline"
+        try {
+          btnText.textContent = "व्हाट्सएप संदेश भेजा जा रहा है... (Sending WhatsApp)";
+          const waResponse = await fetch(WHATSAPP_SERVICE_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          });
+          const waResult = await waResponse.json();
+          if (waResult.success) {
+            if (waResult.queued) {
+              waStatusResult = "queued";
+            } else {
+              waStatusResult = "sent";
+            }
+            console.log("WhatsApp dispatch result:", waResult);
+          }
+        } catch (waErr) {
+          console.log("Local WhatsApp Web bot service is not running or offline:", waErr.message);
+          saveOfflineBooking(payload);
+          waStatusResult = "offline";
+        }
+
+        payload.waStatusResult = waStatusResult;
 
         // Store recent booking in localStorage
         payload.bookingId = bookingId;
@@ -225,6 +254,38 @@ function initFormInteractions() {
 }
 
 /* ==============================================================================
+   Offline Bookings Synchronization Helpers
+   ============================================================================== */
+function saveOfflineBooking(booking) {
+  try {
+    const list = JSON.parse(localStorage.getItem("shive_unsent_bookings") || "[]");
+    list.push(booking);
+    localStorage.setItem("shive_unsent_bookings", JSON.stringify(list));
+    console.log("Booking saved to browser offline queue. Will sync when server starts.");
+  } catch (e) {}
+}
+
+async function syncOfflineBookings() {
+  try {
+    const list = JSON.parse(localStorage.getItem("shive_unsent_bookings") || "[]");
+    if (!list || list.length === 0) return;
+
+    const res = await fetch("http://localhost:5000/api/enqueue-pending", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ bookings: list })
+    });
+    const result = await res.json();
+    if (result.success) {
+      console.log(`Synced ${list.length} offline booking(s) to WhatsApp server queue!`);
+      localStorage.removeItem("shive_unsent_bookings");
+    }
+  } catch (e) {
+    // Server still offline
+  }
+}
+
+/* ==============================================================================
    3. Receipt Modal & WhatsApp Share
    ============================================================================== */
 function showReceiptModal(data) {
@@ -239,6 +300,28 @@ function showReceiptModal(data) {
   document.getElementById("receiptSeats").textContent = data.seats + " Seat(s)";
   document.getElementById("receiptAmount").textContent = "₹" + data.totalAmount.toLocaleString("en-IN");
   document.getElementById("receiptDate").textContent = "31 अक्टूबर 2026 (प्रातः 09:00 AM)";
+
+  // Dynamic WhatsApp Status Notice
+  const statusNotice = document.getElementById("receiptWhatsAppStatusNotice");
+  const statusText = document.getElementById("receiptWhatsAppStatusText");
+  if (statusNotice && statusText) {
+    if (data.waStatusResult === "sent") {
+      statusNotice.style.background = "#F0FDF4";
+      statusNotice.style.borderColor = "#86EFAC";
+      statusNotice.style.color = "#166534";
+      statusText.innerHTML = `<strong>✅ बधाई हो!</strong> आपके व्हाट्सएप नंबर <strong>(${data.phone})</strong> पर बुकिंग कन्फर्मेशन संदेश स्वतः भेज दिया गया है।`;
+    } else if (data.waStatusResult === "queued") {
+      statusNotice.style.background = "#FEF3C7";
+      statusNotice.style.borderColor = "#FDE68A";
+      statusNotice.style.color = "#B45309";
+      statusText.innerHTML = `<strong>⏳ सुरक्षित कतार (Queue):</strong> व्हाट्सएप अभी कनेक्ट नहीं है, संदेश पेंडिंग लिस्ट में सुरक्षित कर लिया गया है। जैसे ही WhatsApp कनेक्ट होगा, संदेश स्वतः पहुँच जाएगा!`;
+    } else {
+      statusNotice.style.background = "#FFFBEB";
+      statusNotice.style.borderColor = "#FDE68A";
+      statusNotice.style.color = "#92400E";
+      statusText.innerHTML = `<strong>ℹ️ ऑफ़लाइन सुरक्षित:</strong> व्हाट्सएप बॉट सर्वर अभी बंद है। जब भी सर्वर चालू होगा, पेंडिंग संदेश स्वतः चला जाएगा (या आप नीचे 'WhatsApp पर भेजें' बटन से अभी भेज सकते हैं)।`;
+    }
+  }
 
   // Dynamic WhatsApp button
   const waBtn = document.getElementById("btnWhatsAppReceipt");
@@ -267,6 +350,40 @@ function showReceiptModal(data) {
 
   receiptModal.classList.add("active");
 }
+
+/* ==============================================================================
+   Check WhatsApp Bot Status (Live indicator in Navbar & Auto-Sync)
+   ============================================================================== */
+async function checkWhatsAppBotStatus() {
+  const navStatus = document.getElementById("navWaStatus");
+
+  try {
+    const res = await fetch(WHATSAPP_STATUS_URL);
+    const data = await res.json();
+    if (navStatus) {
+      if (data.status === "connected") {
+        navStatus.innerHTML = `WhatsApp Bot 🟢 ${data.pendingCount > 0 ? `(${data.pendingCount} Pending)` : ''}`;
+        navStatus.parentElement.style.borderColor = "#22C55E";
+        navStatus.parentElement.style.color = "#15803D";
+      } else if (data.status === "qr_ready") {
+        navStatus.innerHTML = "WhatsApp Bot 🟡 (Scan QR)";
+        navStatus.parentElement.style.borderColor = "#F59E0B";
+        navStatus.parentElement.style.color = "#B45309";
+      } else {
+        navStatus.innerHTML = "WhatsApp Bot ⚪";
+      }
+    }
+
+    // Auto-sync any offline saved bookings if server is online!
+    syncOfflineBookings();
+
+  } catch (e) {
+    if (navStatus) navStatus.innerHTML = "WhatsApp Bot";
+  }
+}
+
+// Background poll to keep status and queue sync fresh every 10 seconds
+setInterval(checkWhatsAppBotStatus, 10000);
 
 function closeReceiptModal() {
   const receiptModal = document.getElementById("bookingReceiptModal");
